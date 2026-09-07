@@ -1,0 +1,403 @@
+/* ELITEDRESS — shared stylesheet (css/style.css)
+   Loaded by every page. Keep selectors generic/reusable — page-specific
+   rules belong in that page's own <style> block, not here. */
+
+:root{
+  --bg-1:#0A0E17;
+  --bg-2:#12161F;
+  --gold:#C9A15A;
+  --gold-2:#D4AF37;
+  --cream:#F5F1E8;
+  --light-bg:#F3EFE6;
+  --border-gold:rgba(201,161,90,0.3);
+  --gray-soft:#B9B6AE;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg-1);
+  color:var(--cream);
+  font-family:'Noto Kufi Arabic', sans-serif;
+  font-weight:400;
+  overflow-x:hidden;
+}
+
+/* Site-wide: text is not selectable/long-press-highlightable by default.
+   Explicit exceptions (phone, email, full product description) opt back
+   in via .selectable — see rule below. */
+body{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.selectable{
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+.latin{font-family:'Cormorant Garamond', serif;}
+::selection{background:var(--gold);color:var(--bg-1);}
+:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px;}
+
+/* ===== Header ===== */
+header{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 6vw;
+  background:rgba(10,14,23,0.85);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border-gold);
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:38px;height:38px;border:1px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--gold-2);
+  font-family:'Cormorant Garamond', serif;font-size:18px;flex-shrink:0;
+}
+.brand-name{
+  font-family:'Cormorant Garamond', serif;letter-spacing:0.32em;
+  font-size:19px;color:var(--cream);font-weight:500;
+}
+nav ul{display:flex;gap:38px;}
+nav a{font-size:15px;color:var(--cream);position:relative;padding-bottom:6px;transition:color .3s ease;}
+nav a:hover{color:var(--gold-2);}
+nav a::after{
+  content:"";position:absolute;right:0;left:0;bottom:0;height:1px;
+  background:var(--gold-2);transform:scaleX(0);transform-origin:center;
+  transition:transform .35s ease;
+}
+nav a.active{color:var(--gold-2);}
+nav a:hover::after, nav a.active::after{transform:scaleX(1);}
+
+.icon-btn{
+  width:40px;height:40px;border:1px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--gold-2);
+  transition:background .3s ease, color .3s ease, transform .3s ease;flex-shrink:0;
+}
+.icon-btn:hover{background:var(--gold-2);color:var(--bg-1);transform:scale(1.06);}
+.icon-btn svg{pointer-events:none;}
+
+/* زر تبديل اللغة — نفس دائرة .icon-btn، بس عنصر <button> فبيحتاج تصفير
+   تنسيق المتصفح الافتراضي (خلفية/حدود/خط) قبل ما يورث شكل icon-btn. */
+button.icon-btn.lang-toggle{
+  background:transparent;border-color:var(--gold);
+  font-family:'Cormorant Garamond', serif;font-size:13px;font-weight:600;
+  letter-spacing:.04em;cursor:pointer;padding:0;
+}
+button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
+
+.nav-toggle{display:none;}
+@media (max-width:860px){
+  nav{
+    position:fixed;inset:0 0 0 auto;top:74px;width:78vw;max-width:320px;
+    height:calc(100vh - 74px);background:var(--bg-2);
+    border-left:1px solid var(--border-gold);
+    transform:translateX(100%);transition:transform .4s ease;padding:36px 28px;
+  }
+  nav.open{transform:translateX(0);}
+  nav ul{flex-direction:column;gap:26px;}
+  .nav-toggle{display:flex;flex-direction:column;gap:5px;width:26px;}
+  .nav-toggle span{height:1px;width:100%;background:var(--gold-2);}
+}
+
+/* ===== Generic page header (used by collection/about/contact) ===== */
+.page-hero{padding:70px 6vw 30px;text-align:center;}
+.page-eyebrow{color:var(--gold-2);font-size:14px;letter-spacing:0.08em;margin-bottom:10px;}
+.page-hero h1{
+  font-family:'Amiri', serif;font-weight:700;
+  font-size:clamp(32px, 5vw, 48px);color:var(--cream);margin-bottom:14px;
+}
+.page-hero p{color:var(--gray-soft);font-size:15px;max-width:560px;margin:0 auto;line-height:1.9;}
+
+/* ===== Product grid + cards (collection page) ===== */
+.filters{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+  padding:30px 6vw 10px;
+}
+.filter-tab{
+  padding:10px 26px;border:1px solid var(--border-gold);border-radius:999px;
+  font-size:14px;color:var(--gray-soft);background:rgba(255,255,255,0.02);
+  transition:background .3s ease, color .3s ease, border-color .3s ease;
+}
+.filter-tab:hover{color:var(--cream);border-color:var(--gold);}
+.filter-tab.active{
+  background:linear-gradient(135deg, var(--gold-2), var(--gold));
+  color:var(--bg-1);border-color:transparent;font-weight:600;
+}
+
+.product-grid{
+  max-width:1200px;margin:0 auto;padding:40px 6vw 100px;
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:26px;
+}
+@media (max-width:980px){.product-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.product-grid{grid-template-columns:1fr;}}
+
+.card-link{display:block;color:inherit;text-decoration:none;}
+.card{
+  position:relative;border-radius:24px 24px 0 0;overflow:hidden;
+  background:#171b26;transition:box-shadow 0.3s ease;
+}
+.card-img{
+  position:relative;aspect-ratio:4/5;overflow:hidden;
+  border-radius:24px 24px 0 0;background:#0A0E17;
+}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease;}
+.card:hover .card-img img{transform:scale(1.03);}
+.card:hover{box-shadow:0 16px 38px rgba(201,161,90,0.28);}
+
+/* Fabric badges — overlay ON TOP of the product image itself (bottom-right
+   corner, overlapping the photo — not below/outside it). Each badge is a
+   FIXED-width capsule (~half the image width, same for every fabric
+   regardless of name length) — a name that doesn't fit is truncated with
+   an ellipsis (plain CSS text-overflow), never resized or scrolled. When
+   a product has more than one show_on_card fabric, each gets its own
+   badge, stacked with a small gap: the first fabric sits at the bottom
+   (closest to the image's bottom edge), each following one stacks above
+   it (flex-direction:column-reverse — see cardTemplate() in
+   collection.html). All fabrics are visible at once — no time-based
+   rotation.
+
+   Look: a glossy, richly-saturated capsule — no internal texture, no
+   glass haze. The base is a vivid two-color gradient (right -> left,
+   --fabric-from-a -> --fabric-to-a) at near-full opacity so the colors
+   read as vibrant, not washed out. A soft highlight band across the top
+   third gives it a glossy "polished gem" curve, and a bright diagonal
+   shine periodically sweeps across the whole badge — that's the
+   "legendary" glint, not a busy texture sitting inside it. Colors come
+   from that fabric's own ribbon_from/ribbon_to (converted to rgba() per
+   instance — see getCardFabrics() in js/site.js) rather than one shared
+   look for every product. The whole row is omitted when a product has no
+   show_on_card fabrics — see getCardFabrics(). */
+.fabric-strip-row{
+  position:absolute;z-index:4;right:12px;bottom:12px;
+  width:50%;
+  display:flex;flex-direction:column-reverse;
+  gap:5px;
+}
+.fabric-strip{
+  --fabric-from-a:rgba(184,134,11,0.94);--fabric-to-a:rgba(90,61,27,0.94);
+  --fabric-mid-a:rgba(184,134,11,0.94);
+  position:relative;
+  height:30px;
+  display:flex;align-items:stretch;
+  width:100%;
+  border-radius:999px;overflow:hidden;
+  background:linear-gradient(135deg, var(--fabric-from-a) 0%, var(--fabric-mid-a) 35%, var(--fabric-to-a) 65%, var(--fabric-mid-a) 100%);
+  background-size:280% 280%;
+  animation:fabric-glow-breathe 4s ease-in-out infinite, fabric-shadow-sway 3.6s ease-in-out infinite;
+  border:1px solid rgba(255,255,255,0.32);
+  box-shadow:0 4px 14px rgba(0,0,0,0.4), inset 0 -6px 10px rgba(0,0,0,0.18), 0 0 0 rgba(255,255,255,0);
+  transition:transform .2s ease, filter .2s ease;
+}
+.fabric-strip:active,
+.fabric-strip.tapped{
+  transform:scale(1.05);
+  filter:brightness(1.25);
+}
+@keyframes fabric-glow-breathe{
+  0%{background-position:0% 50%;box-shadow:0 4px 14px rgba(0,0,0,0.4), inset 0 -6px 10px rgba(0,0,0,0.18), 0 0 6px rgba(255,255,255,0.15);}
+  50%{background-position:100% 50%;box-shadow:0 4px 16px rgba(0,0,0,0.42), inset 0 -6px 10px rgba(0,0,0,0.18), 0 0 14px rgba(255,255,255,0.4);}
+  100%{background-position:0% 50%;box-shadow:0 4px 14px rgba(0,0,0,0.4), inset 0 -6px 10px rgba(0,0,0,0.18), 0 0 6px rgba(255,255,255,0.15);}
+}
+/* Soft drifting shadow underneath — a light "floating" sway. */
+@keyframes fabric-shadow-sway{
+  0%{filter:drop-shadow(-3px 3px 4px rgba(0,0,0,0.35));}
+  50%{filter:drop-shadow(3px 3px 4px rgba(0,0,0,0.35));}
+  100%{filter:drop-shadow(-3px 3px 4px rgba(0,0,0,0.35));}
+}
+/* Static glossy highlight across the top — the "polished" read. */
+.fabric-strip::before{
+  content:"";
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 48%);
+  pointer-events:none;
+}
+/* Small drifting light specks inside the fabric — a slow inner shimmer
+   that reads as light catching silk, not an external sweep. */
+.fabric-strip::after{
+  content:"";
+  position:absolute;inset:0;z-index:1;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.55) 0%, transparent 3%),
+    radial-gradient(circle at 55% 65%, rgba(255,255,255,0.4) 0%, transparent 2.5%),
+    radial-gradient(circle at 80% 25%, rgba(255,255,255,0.5) 0%, transparent 2%);
+  background-size:200% 200%;
+  animation:fabric-shimmer-drift 7s ease-in-out infinite;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+@keyframes fabric-shimmer-drift{
+  0%{background-position:0% 0%;opacity:0.5;}
+  50%{background-position:100% 60%;opacity:1;}
+  100%{background-position:0% 0%;opacity:0.5;}
+}
+/* Thumbnail is flush against the badge's own edge — same height as the
+   badge, zero gap around it, so its curve lines up exactly with the
+   capsule's rounded end instead of floating with padding around it. A
+   thin glowing white ring defines its edge against the glass so it never
+   blends into a similarly-colored background. The ring breathes gently
+   so the thumbnail reads as alive rather than a static sticker. */
+.fabric-thumb{
+  position:relative;z-index:2;flex-shrink:0;
+  width:30px;height:100%;border-radius:50%;overflow:hidden;
+  background:#0A0E17;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.85), 0 0 5px rgba(255,255,255,0.55);
+  animation:fabric-thumb-pulse 4s ease-in-out infinite;
+}
+@keyframes fabric-thumb-pulse{
+  0%{box-shadow:0 0 0 1px rgba(255,255,255,0.85), 0 0 5px rgba(255,255,255,0.55);}
+  50%{box-shadow:0 0 0 1.5px rgba(255,255,255,1), 0 0 9px rgba(255,255,255,0.85);}
+  100%{box-shadow:0 0 0 1px rgba(255,255,255,0.85), 0 0 5px rgba(255,255,255,0.55);}
+}
+.fabric-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+
+.fabric-name-text{
+  position:relative;z-index:2;flex:1;min-width:0;
+  display:flex;align-items:center;
+  padding:0 12px 0 6px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font-weight:800;font-size:11.5px;letter-spacing:0.02em;
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 0 1px rgba(0,0,0,0.45);
+}
+@media (prefers-reduced-motion: reduce){
+  .fabric-strip,
+  .fabric-strip::after,
+  .fabric-thumb{animation:none;}
+}
+
+.corner{
+  position:absolute;width:20px;height:20px;border-color:var(--gold-2);
+  border-style:solid;border-width:0;opacity:0;transition:opacity .35s ease;pointer-events:none;
+}
+.corner-tl{top:10px;right:10px;border-top-width:1.5px;border-right-width:1.5px;}
+.corner-tr{top:10px;left:10px;border-top-width:1.5px;border-left-width:1.5px;}
+.corner-bl{bottom:10px;right:10px;border-bottom-width:1.5px;border-right-width:1.5px;}
+.corner-br{bottom:10px;left:10px;border-bottom-width:1.5px;border-left-width:1.5px;}
+.card:hover .corner{opacity:1;}
+
+/* UNIFORM CARD SIZE — قبل هيك، ارتفاع .card-body كان بيتغيّر حسب محتواه:
+   منتج فيه خصم (سطرين: سعر + عداد تنازلي) كان أطول من منتج بدون خصم (سطر
+   وحيد)، ومنتج اسمه طويل كان يوخد سطرين بينما اسم قصير ياخد سطر. النتيجة:
+   بطاقات بأحجام مختلفة بنفس الصف. الحل: ارتفاع ثابت لـ.card-body (يتّسع
+   لأسوأ حالة: اسم بسطرين + خصم بعداد)، مع قصّ العنوان والوصف كل واحد على
+   عدد أسطر ثابت (line-clamp) بدل ما يطول الصندوق فعليًا، وتثبيت قسم السعر
+   بأسفل البطاقة دايمًا (margin-top:auto جوا flex column) — هيك سواء كان
+   المنتج فيه خصم أو لأ، طويل الاسم أو قصيره، البطاقة كلها نفس الطول تمامًا. */
+.card-body{
+  padding:18px 16px 16px;text-align:start;border-top:1px solid var(--border-gold);
+  display:flex;flex-direction:column;height:196px;
+}
+.card-body .price-row{display:flex;align-items:baseline;gap:8px;margin-top:auto;flex-wrap:wrap;}
+.card-body h3{
+  font-family:'Amiri', serif;font-size:18px;color:var(--cream);margin-bottom:4px;
+  line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+}
+.card-body p{
+  font-size:12.5px;color:var(--gray-soft);line-height:1.45;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;
+}
+.price-current{font-size:14px;color:var(--gold-2);font-weight:600;}
+.price-original{font-size:12px;color:var(--gray-soft);text-decoration:line-through;}
+.card-body .price-on-request{font-size:13px;color:var(--gray-soft);margin-top:auto;}
+
+.empty-state{text-align:center;color:var(--gray-soft);padding:60px 20px;grid-column:1/-1;}
+
+/* ===== Buttons ===== */
+.cta-btn{
+  position:relative;display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg, var(--gold-2), var(--gold));
+  color:var(--bg-1);font-weight:600;font-size:16px;padding:16px 40px;
+  border-radius:999px;overflow:hidden;
+  transition:transform .35s ease, box-shadow .35s ease;
+  box-shadow:0 10px 30px rgba(212,175,55,0.15);
+}
+.cta-btn:hover{transform:scale(1.045);box-shadow:0 14px 36px rgba(212,175,55,0.3);}
+
+.whatsapp-cta{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  margin-top:28px;padding:17px 20px;border-radius:999px;
+  background:linear-gradient(135deg, #2fb56a, #1f9c56);color:#fff;
+  font-weight:600;font-size:16px;
+  transition:transform .3s ease, box-shadow .3s ease;
+  box-shadow:0 10px 26px rgba(31,156,86,0.25);
+}
+.whatsapp-cta:hover{transform:scale(1.02);box-shadow:0 14px 32px rgba(31,156,86,0.35);}
+.whatsapp-cta svg{flex-shrink:0;pointer-events:none;}
+
+/* ===== Countdown ===== */
+.discount-countdown{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--gold-2);
+  background:rgba(212,175,55,0.1);
+  border:1px solid var(--border-gold);
+  border-radius:999px;padding:4px 12px;margin-top:6px;
+}
+
+/* ===== Breadcrumb ===== */
+.breadcrumb{padding:22px 6vw 0;font-size:13px;color:var(--gray-soft);}
+.breadcrumb a{color:var(--gray-soft);transition:color .2s ease;}
+.breadcrumb a:hover{color:var(--gold-2);}
+.breadcrumb .sep{margin:0 8px;color:var(--border-gold);}
+.breadcrumb .current{color:var(--gold-2);}
+
+.not-found{text-align:center;padding:100px 6vw;color:var(--gray-soft);}
+.not-found a{color:var(--gold-2);text-decoration:underline;}
+
+/* ===== Footer ===== */
+footer{
+  background:var(--bg-1);padding:44px 6vw;text-align:center;
+  border-top:1px solid var(--border-gold);color:var(--gray-soft);font-size:13px;
+}
+footer .footer-brand{letter-spacing:.2em;color:var(--gold-2);margin-bottom:14px;display:block;}
+.footer-contact{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  margin-bottom:14px;font-size:13.5px;
+}
+.footer-row{display:flex;align-items:center;gap:9px;color:var(--gray-soft);}
+.footer-row a{transition:color .2s ease;}
+.footer-row a:hover{color:var(--gold-2);}
+.footer-icon{display:flex;color:var(--gold-2);flex-shrink:0;}
+
+/* ===== Social icon row (contact page) ===== */
+.social-grid{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:22px;
+  padding:20px 6vw 60px;
+}
+.social-item{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.social-item .icon-btn{width:58px;height:58px;}
+.social-item .icon-btn svg{width:24px;height:24px;}
+.social-item span{font-size:13px;color:var(--gray-soft);}
+
+/* RESILIENCE — بديل أنيق لأيقونة "الصورة معطوبة" الافتراضية، لأي
+   صورة منتج تفشل بالتحميل نهائيًا حتى بعد إعادة المحاولة (site.js). */
+img.img-fallback{
+  background:linear-gradient(135deg, var(--gold-2, #B8923F) 0%, rgba(184,146,63,0.15) 100%);
+  min-height:200px;
+  display:block;
+}
+
+/* "معرض حيّ" — حركة ناعمة عند التمرير (site.js: armScrollReveal). محصورة
+   جوا prefers-reduced-motion:no-preference عمدًا: لو المستخدم مفعّل "تقليل
+   الحركة"، أو لسبب ما JS ما اشتغل، هاي القاعدة كلها ما بتنطبق، والعنصر
+   بيظهر عادي فورًا بلا تعتيم ولا تأخير — الحركة زخرفة إضافية بس، مش شرط
+   لظهور المحتوى. */
+@media (prefers-reduced-motion:no-preference){
+  .reveal-on-scroll{
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity .55s ease, transform .55s ease;
+    will-change:opacity, transform;
+  }
+  .reveal-on-scroll.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+}

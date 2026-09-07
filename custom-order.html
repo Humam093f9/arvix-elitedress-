@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="custom.page_title">فصّلي فستانك — ELITEDRESS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .custom-form{
+    max-width:720px;margin:0 auto;padding:10px 6vw 90px;
+    display:flex;flex-direction:column;gap:34px;
+  }
+  .form-section{border-top:1px solid var(--border-gold);padding-top:24px;}
+  .form-section:first-child{border-top:none;padding-top:0;}
+  .form-section h3{font-family:'Amiri', serif;font-size:19px;color:var(--cream);margin-bottom:6px;}
+  .form-section .hint{font-size:13px;color:var(--gray-soft);margin-bottom:16px;line-height:1.8;}
+
+  .fabric-checklist{display:flex;flex-direction:column;gap:12px;}
+  .fabric-check-row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--cream);cursor:pointer;}
+  .fabric-check-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold-2);cursor:pointer;flex-shrink:0;}
+  .fabric-check-row .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+
+  .custom-fabric-rows{display:flex;flex-direction:column;gap:12px;margin-top:14px;padding-inline-start:28px;}
+  .custom-fabric-rows[hidden]{display:none;}
+  .custom-fabric-row{display:flex;gap:10px;align-items:center;}
+  .custom-fabric-row input[type=text]{
+    flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border-gold);
+    border-radius:8px;padding:10px 14px;color:var(--cream);font-size:13px;font-family:inherit;
+  }
+  .custom-fabric-row input[type=text]::placeholder{color:var(--gray-soft);}
+  .remove-row-btn{
+    width:30px;height:30px;border-radius:50%;border:1px solid var(--border-gold);
+    color:var(--gray-soft);flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .remove-row-btn:hover{border-color:#c0405a;color:#c0405a;}
+  .add-row-btn{
+    align-self:flex-start;font-size:13px;color:var(--gold-2);
+    border:1px dashed var(--border-gold);border-radius:999px;padding:8px 18px;margin-top:4px;
+    transition:border-color .2s ease;
+  }
+  .add-row-btn:hover{border-color:var(--gold);}
+
+  .upload-zone{border:1px dashed var(--border-gold);border-radius:14px;padding:24px;text-align:center;}
+  .upload-zone input[type=file]{display:none;}
+  .upload-label{
+    display:inline-block;cursor:pointer;color:var(--gold-2);font-size:14px;
+    padding:10px 22px;border:1px solid var(--gold);border-radius:999px;
+    transition:background .25s ease, color .25s ease;
+  }
+  .upload-label:hover{background:var(--gold-2);color:var(--bg-1);}
+  .upload-status{margin-top:12px;font-size:13px;color:var(--gray-soft);min-height:1.2em;}
+  .upload-preview{margin-top:14px;max-width:160px;border-radius:10px;overflow:hidden;margin-inline:auto;border:1px solid var(--border-gold);display:none;}
+  .upload-preview img{width:100%;display:block;}
+
+  .notes-field{
+    width:100%;min-height:120px;background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-gold);border-radius:12px;padding:14px 16px;
+    color:var(--cream);font-size:14px;font-family:inherit;line-height:1.8;resize:vertical;
+  }
+  .notes-field::placeholder{color:var(--gray-soft);}
+
+  .upload-warning{
+    display:flex;gap:10px;align-items:flex-start;
+    background:rgba(212,175,55,0.08);border:1px solid var(--border-gold);
+    border-radius:12px;padding:14px 16px;font-size:13px;color:var(--cream);line-height:1.8;
+  }
+  .upload-warning[hidden]{display:none;}
+
+  .form-error{font-size:13px;color:#e08a9a;margin-top:10px;min-height:1.2em;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark latin">E</span>
+    <span class="brand-name latin">ELITEDRESS</span>
+  </div>
+
+  <button class="nav-toggle" id="navToggle" data-i18n-aria="nav.menu_aria" aria-label="فتح القائمة" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="index.html" data-i18n="nav.home">الرئيسية</a></li>
+      <li><a href="collection.html" data-i18n="nav.collection">المجموعة</a></li>
+      <li><a href="about.html" data-i18n="nav.about">من نحن</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">تواصل معنا</a></li>
+      <li><a href="custom-order.html" class="active" data-i18n="nav.custom">فصّلي فستانك</a></li>
+    </ul>
+  </nav>
+
+  <a href="#" class="icon-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </a>
+  <button type="button" class="icon-btn lang-toggle" id="langToggle" aria-label="Switch language">EN</button>
+</header>
+
+<section class="page-hero reveal-on-scroll">
+  <p class="page-eyebrow" data-i18n="custom.eyebrow">تصميم بلمستك الخاصة</p>
+  <h1 data-i18n="nav.custom">فصّلي فستانك</h1>
+  <p data-i18n="custom.subtitle">اختاري القماش الذي يناسب ذوقك، وأرفقي صورة مرجعية إن أردت، وسنتولى الباقي.</p>
+</section>
+
+<div class="custom-form">
+
+  <div class="form-section">
+    <h3 data-i18n="custom.section_fabric">اختيار القماش</h3>
+    <p class="hint" data-i18n="custom.fabric_hint">يمكنك اختيار أكثر من قماش، أو إضافة قماش غير مدرج بالأسفل.</p>
+    <div class="fabric-checklist" id="fabricChecklist"></div>
+
+    <div class="custom-fabric-rows" id="customFabricRows" hidden></div>
+    <button type="button" class="add-row-btn" id="addFabricRowBtn" hidden data-i18n="custom.add_fabric">+ إضافة قماش آخر</button>
+  </div>
+
+  <div class="form-section">
+    <h3><span data-i18n="custom.section_image">صورة مرجعية</span> <span style="color:var(--gray-soft);font-weight:400;font-size:13px;" data-i18n="custom.optional">(اختياري)</span></h3>
+    <p class="hint" data-i18n="custom.image_hint">إن كان لديك تصميم أو صورة تتمنين تفصيل فستانك على غرارها، أرفقيها هنا.</p>
+    <div class="upload-zone">
+      <label class="upload-label" for="referenceImageInput" data-i18n="custom.choose_image">اختيار صورة</label>
+      <input type="file" id="referenceImageInput" accept="image/*">
+      <div class="upload-status" id="uploadStatus"></div>
+      <div class="upload-preview" id="uploadPreview"><img id="uploadPreviewImg" data-i18n-aria="custom.image_alt" alt="الصورة المرجعية المرفقة"></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span data-i18n="custom.section_notes">ملاحظات</span> <span style="color:var(--gray-soft);font-weight:400;font-size:13px;" data-i18n="custom.optional">(اختياري)</span></h3>
+    <textarea class="notes-field" id="notesField" data-i18n-placeholder="custom.notes_placeholder" placeholder="أي تفاصيل إضافية تودّين ذكرها — اللون المفضل، المناسبة، الموعد المطلوب..."></textarea>
+  </div>
+
+  <div class="form-section" id="warningSection" hidden>
+    <div class="upload-warning" id="uploadWarning" hidden>
+      <span>⚠️</span>
+      <span data-i18n="custom.upload_warning">الرسالة جاهزة تلقائياً وفيها رابط الصورة التي رفعتِها — يرجى عدم حذف الرابط عند التعديل أو الإرسال.</span>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <button type="button" class="whatsapp-cta" id="submitOrderBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span data-i18n="custom.submit">إرسال الطلب</span>
+    </button>
+    <p class="form-error" id="formError"></p>
+  </div>
+
+</div>
+
+<footer>
+  <span class="latin footer-brand">ELITEDRESS</span>
+  <div class="footer-contact" id="footerContact"></div>
+  <p>© 2026 ELITEDRESS. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  initNav();
+
+  let uploadedImageUrl = null;
+  let customRowCount = 0;
+
+  function customFabricRowTemplate(rowId){
+    return `
+      <div class="custom-fabric-row" data-row-id="${rowId}">
+        <input type="text" class="custom-fabric-name" placeholder="${t('custom.fabric_name_placeholder')}">
+        <input type="text" class="custom-fabric-color" placeholder="${t('custom.fabric_color_placeholder')}">
+        <button type="button" class="remove-row-btn" aria-label="${t('custom.remove_row')}">×</button>
+      </div>`;
+  }
+
+  function addCustomFabricRow(){
+    customRowCount++;
+    const rowsHost = document.getElementById('customFabricRows');
+    const wrap = document.createElement('div');
+    wrap.innerHTML = customFabricRowTemplate(customRowCount);
+    const rowEl = wrap.firstElementChild;
+    rowEl.querySelector('.remove-row-btn').addEventListener('click', () => rowEl.remove());
+    rowsHost.appendChild(rowEl);
+  }
+
+  function toggleOtherFabricRows(show){
+    const rowsHost = document.getElementById('customFabricRows');
+    const addBtn = document.getElementById('addFabricRowBtn');
+    rowsHost.hidden = !show;
+    addBtn.hidden = !show;
+    if(show && rowsHost.children.length === 0){
+      addCustomFabricRow();
+    }
+  }
+
+  /** Uploads the chosen reference image to the shared images bucket and
+      returns its public URL. Optional feature — any failure here (bucket
+      not yet configured on the Arvix side, network issue, etc.) is caught
+      by the caller and the rest of the form still works without an image. */
+  async function uploadReferenceImage(file){
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const path = 'custom-orders/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+    const { data, error } = await SUPA.storage.from(CUSTOM_ORDER_IMAGE_BUCKET).upload(path, file, { cacheControl: '3600', upsert: false });
+    if(error) throw error;
+    const pub = SUPA.storage.from(CUSTOM_ORDER_IMAGE_BUCKET).getPublicUrl(path);
+    return pub && pub.data ? pub.data.publicUrl : null;
+  }
+
+  function buildCustomOrderMessage(selectedLibraryNames, customEntries, notes, imageUrl){
+    const lines = [];
+    lines.push(t('custom.msg_title'));
+
+    const customLabels = customEntries
+      .filter(e => e.name)
+      .map(e => e.color ? `${e.name} (${e.color})` : e.name);
+    const allFabrics = selectedLibraryNames.concat(customLabels);
+    lines.push(t('custom.msg_fabrics') + ': ' + (allFabrics.length ? allFabrics.join(t('list.separator')) : t('custom.msg_none')));
+
+    const trimmedNotes = (notes || '').trim();
+    lines.push(t('custom.msg_notes') + ': ' + (trimmedNotes ? trimmedNotes : t('custom.msg_no_notes')));
+
+    if(imageUrl){
+      lines.push('📷 ' + t('custom.msg_image_link') + ': ' + imageUrl);
+    }
+
+    lines.push('---');
+    return lines.join('\n');
+  }
+
+  function collectSelections(){
+    const selectedLibraryNames = Array.from(document.querySelectorAll('#fabricChecklist input[type=checkbox]:checked'))
+      .map(cb => cb.dataset.name);
+    const customEntries = Array.from(document.querySelectorAll('.custom-fabric-row')).map(row => ({
+      name: row.querySelector('.custom-fabric-name').value.trim(),
+      color: row.querySelector('.custom-fabric-color').value.trim()
+    }));
+    return { selectedLibraryNames, customEntries };
+  }
+
+  (async function init(){
+    const settings = await getSettings();
+
+    document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
+    document.getElementById('footerContact').innerHTML = renderFooterContact(settings);
+    document.addEventListener('langchange', function(){ document.getElementById('footerContact').innerHTML = renderFooterContact(settings);  document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry')); });
+
+    // Fabric checklist — built from settings.fabrics_library, plus a fixed
+    // "أخرى" option that reveals the repeatable custom-fabric rows.
+    // بتترسم مرة وحدة بس (مش بتعيد نفسها لما تتبدّل اللغة) عشان ما تمسح
+    // اختيارات المستخدمة الموجودة أصلاً — بس نص "أخرى" نفسه متل باقي
+    // نصوص الموقع، بيتحدّث تلقائيًا لأنه data-i18n عادي.
+    const fabrics = Array.isArray(settings.fabrics_library) ? settings.fabrics_library.filter(f => f && f.name) : [];
+    const checklistHost = document.getElementById('fabricChecklist');
+    checklistHost.innerHTML = fabrics.map((f, i) => `
+      <label class="fabric-check-row">
+        <input type="checkbox" data-name="${f.name}">
+        <span class="dot" style="background-color:${f.strip_color || 'var(--gold-2)'}"></span>
+        ${f.name}
+      </label>
+    `).join('') + `
+      <label class="fabric-check-row">
+        <input type="checkbox" id="otherFabricToggle">
+        <span class="dot" style="background-color:var(--gray-soft)"></span>
+        <span data-i18n="custom.other_fabric">أخرى</span>
+      </label>`;
+    applyLang(getLang());
+
+    document.getElementById('otherFabricToggle').addEventListener('change', e => {
+      toggleOtherFabricRows(e.target.checked);
+    });
+    document.getElementById('addFabricRowBtn').addEventListener('click', addCustomFabricRow);
+
+    // Image upload
+    const fileInput = document.getElementById('referenceImageInput');
+    const statusEl = document.getElementById('uploadStatus');
+    const previewEl = document.getElementById('uploadPreview');
+    const previewImg = document.getElementById('uploadPreviewImg');
+    const warningSection = document.getElementById('warningSection');
+    const uploadWarning = document.getElementById('uploadWarning');
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if(!file) return;
+
+      previewImg.src = URL.createObjectURL(file);
+      previewEl.style.display = 'block';
+      statusEl.textContent = t('custom.uploading');
+      uploadedImageUrl = null;
+      warningSection.hidden = true;
+      uploadWarning.hidden = true;
+
+      try{
+        const url = await uploadReferenceImage(file);
+        if(url){
+          uploadedImageUrl = url;
+          statusEl.textContent = t('custom.upload_success');
+          warningSection.hidden = false;
+          uploadWarning.hidden = false;
+        }else{
+          statusEl.textContent = t('custom.upload_failed');
+        }
+      }catch(err){
+        statusEl.textContent = t('custom.upload_failed');
+      }
+    });
+
+    // Submit
+    document.getElementById('submitOrderBtn').addEventListener('click', () => {
+      const errorEl = document.getElementById('formError');
+      const { selectedLibraryNames, customEntries } = collectSelections();
+      const hasAnyFabric = selectedLibraryNames.length > 0 || customEntries.some(e => e.name);
+
+      if(!hasAnyFabric){
+        errorEl.textContent = t('custom.error_no_fabric');
+        return;
+      }
+      errorEl.textContent = '';
+
+      const notes = document.getElementById('notesField').value;
+      const message = buildCustomOrderMessage(selectedLibraryNames, customEntries, notes, uploadedImageUrl);
+      const link = buildWhatsAppLink(settings.buy_phone, message);
+      window.open(link, '_blank', 'noopener');
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle" data-i18n="product.page_title">تفاصيل الفستان — ELITEDRESS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .product-wrap{
+    max-width:1100px;margin:0 auto;padding:30px 6vw 90px;
+    display:grid;grid-template-columns:1fr 1fr;gap:56px;
+  }
+  @media (max-width:860px){.product-wrap{grid-template-columns:1fr;gap:30px;}}
+
+  .product-image{
+    position:relative;
+    aspect-ratio:4/5;border-radius:18px;overflow:hidden;
+    background:#171b26;border:1px solid var(--border-gold);
+  }
+  .product-image img{width:100%;height:100%;object-fit:cover;transition:opacity .2s ease;}
+
+  .gallery-nav{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(10,14,23,0.6);border:1px solid var(--border-gold);
+    display:flex;align-items:center;justify-content:center;color:var(--cream);
+    transition:background .25s ease, border-color .25s ease;
+  }
+  .gallery-nav:hover{background:rgba(212,175,55,0.85);color:var(--bg-1);border-color:transparent;}
+  .gallery-prev{inset-inline-start:14px;}
+  .gallery-next{inset-inline-end:14px;}
+
+  .gallery-thumbs{
+    display:flex;gap:10px;margin-top:14px;overflow-x:auto;padding-bottom:4px;
+  }
+  .gallery-thumb{
+    width:64px;height:80px;flex-shrink:0;border-radius:8px;overflow:hidden;
+    border:1.5px solid transparent;cursor:pointer;opacity:0.6;
+    transition:opacity .25s ease, border-color .25s ease;
+  }
+  .gallery-thumb img{width:100%;height:100%;object-fit:cover;}
+  .gallery-thumb.active{opacity:1;border-color:var(--gold-2);}
+  .gallery-thumb:hover{opacity:1;}
+
+  .sizes-block{
+    border-top:1px solid var(--border-gold);
+    padding-top:16px;margin-top:20px;
+  }
+  .sizes-block h4{
+    font-size:13px;color:var(--gold-2);margin-bottom:10px;letter-spacing:0.03em;
+  }
+  .sizes-list{display:flex;flex-wrap:wrap;gap:10px;}
+  .size-chip{
+    min-width:44px;padding:8px 14px;text-align:center;
+    border:1px solid var(--border-gold);border-radius:8px;
+    font-size:14px;color:var(--cream);cursor:pointer;
+    transition:border-color .2s ease, background .2s ease, color .2s ease;
+  }
+  .size-chip:hover{border-color:var(--gold);}
+  .size-chip.active{
+    background:linear-gradient(135deg, var(--gold-2), var(--gold));
+    color:var(--bg-1);border-color:transparent;font-weight:600;
+  }
+
+  .colors-block{margin:18px 0;}
+  .colors-block h4{
+    font-size:13px;color:var(--gold-2);margin-bottom:10px;letter-spacing:0.03em;
+  }
+  .color-options{display:flex;flex-wrap:wrap;gap:16px;}
+  .color-option{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    cursor:pointer;background:none;
+  }
+  .swatch-circle{
+    width:32px;height:32px;border-radius:50%;
+    border:2px solid var(--border-gold);
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .color-option:hover .swatch-circle{border-color:var(--gold);}
+  .color-option.active .swatch-circle{border-color:var(--gold-2);transform:scale(1.14);}
+  .color-option span{font-size:11px;color:var(--gray-soft);}
+  .color-option.active span{color:var(--gold-2);}
+
+  .fabrics-block{
+    border-top:1px solid var(--border-gold);
+    padding-top:16px;margin-top:20px;
+  }
+  .fabrics-block h4{
+    font-size:13px;color:var(--gold-2);margin-bottom:10px;letter-spacing:0.03em;
+  }
+  .fabrics-list{display:flex;flex-wrap:wrap;gap:10px;}
+  .fabric-chip{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 14px;border:1px solid var(--border-gold);border-radius:999px;
+    font-size:13px;color:var(--cream);
+  }
+  .fabric-chip .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+  .custom-note{
+    font-size:13px;color:var(--gray-soft);line-height:1.8;margin-top:16px;
+  }
+  .custom-order-link{
+    display:inline-block;margin-top:8px;font-size:13px;color:var(--gold-2);
+    text-decoration:underline;text-underline-offset:3px;
+  }
+
+  .product-info h1{
+    font-family:'Amiri', serif;font-weight:700;
+    font-size:clamp(26px, 3.4vw, 36px);color:var(--cream);
+    margin-bottom:14px;line-height:1.3;
+  }
+  .product-info .description{
+    color:var(--gray-soft);font-size:15px;line-height:2;margin-bottom:10px;
+  }
+  .product-info .price-block{
+    border-top:1px solid var(--border-gold);
+    border-bottom:1px solid var(--border-gold);
+    padding:18px 0;margin:20px 0;
+  }
+  .product-info .price-current{font-size:22px;}
+  .product-info .price-original{font-size:15px;}
+  .product-info .price-on-request{font-size:16px;color:var(--gold-2);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark latin">E</span>
+    <span class="brand-name latin">ELITEDRESS</span>
+  </div>
+
+  <button class="nav-toggle" id="navToggle" data-i18n-aria="nav.menu_aria" aria-label="فتح القائمة" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="index.html" data-i18n="nav.home">الرئيسية</a></li>
+      <li><a href="collection.html" class="active" data-i18n="nav.collection">المجموعة</a></li>
+      <li><a href="about.html" data-i18n="nav.about">من نحن</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">تواصل معنا</a></li>
+      <li><a href="custom-order.html" data-i18n="nav.custom">فصّلي فستانك</a></li>
+    </ul>
+  </nav>
+
+  <a href="#" class="icon-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </a>
+  <button type="button" class="icon-btn lang-toggle" id="langToggle" aria-label="Switch language">EN</button>
+</header>
+
+<nav class="breadcrumb" data-i18n-aria="product.breadcrumb_aria" aria-label="مسار التصفح">
+  <a href="index.html" data-i18n="nav.home">الرئيسية</a><span class="sep">/</span><a href="collection.html" data-i18n="nav.collection">المجموعة</a><span class="sep">/</span><span class="current" id="breadcrumbCurrent">...</span>
+</nav>
+
+<div id="productRoot">
+  <p style="text-align:center;padding:100px 6vw;color:var(--gray-soft);" data-i18n="product.loading">جاري التحميل...</p>
+</div>
+
+<footer>
+  <span class="latin footer-brand">ELITEDRESS</span>
+  <div class="footer-contact" id="footerContact"></div>
+  <p>© 2026 ELITEDRESS. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  initNav();
+
+  let currentImages = [];
+  let currentIndex = 0;
+  let selectedColorName = null;
+  let selectedSize = null;
+  let currentProduct = null;
+  let currentCurrency = null;
+  let currentBuyPhone = null;
+
+  function setActiveImage(index){
+    currentIndex = index;
+    const mainImg = document.getElementById('mainProductImg');
+    const src = currentImages[currentIndex];
+    mainImg.classList.remove('img-fallback');
+    delete mainImg.dataset.retryCount;
+    mainImg.src = src;
+    armImageFallback(mainImg);
+    document.querySelectorAll('.gallery-thumb').forEach((t, i) => {
+      t.classList.toggle('active', i === currentIndex);
+    });
+  }
+
+  function shiftImage(delta){
+    const len = currentImages.length;
+    setActiveImage((currentIndex + delta + len) % len);
+  }
+
+  /** Re-renders the thumbnail strip + prev/next arrows for whatever is
+      currently in currentImages. Called on load and again every time a
+      color swatch changes the image set — gallery_urls (no colors) never
+      changes after load, but a product's colors can each carry a
+      different number of images, so this can't be built once statically. */
+  function renderGalleryChrome(){
+    const hasGallery = currentImages.length > 1;
+
+    const navHost = document.getElementById('galleryNavHost');
+    navHost.innerHTML = hasGallery ? `
+      <button class="gallery-nav gallery-prev" aria-label="${t('product.prev_image')}" id="galleryPrev">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <button class="gallery-nav gallery-next" aria-label="${t('product.next_image')}" id="galleryNext">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>` : '';
+    if(hasGallery){
+      document.getElementById('galleryPrev').addEventListener('click', () => shiftImage(-1));
+      document.getElementById('galleryNext').addEventListener('click', () => shiftImage(1));
+    }
+
+    const thumbsHost = document.getElementById('galleryThumbsHost');
+    thumbsHost.innerHTML = hasGallery ? `
+      <div class="gallery-thumbs">
+        ${currentImages.map((img, i) => `
+          <div class="gallery-thumb${i === 0 ? ' active' : ''}" data-index="${i}">
+            <img src="${img}" alt="${currentProduct.name} - ${t('product.image_n').replace('{n}', i + 1)}" loading="lazy">
+          </div>
+        `).join('')}
+      </div>` : '';
+    armImageFallbacksIn(thumbsHost);
+    thumbsHost.querySelectorAll('.gallery-thumb').forEach(t => {
+      t.addEventListener('click', () => setActiveImage(parseInt(t.dataset.index, 10)));
+    });
+
+    setActiveImage(0);
+  }
+
+  /** colors is optional — when present it drives the image set (clicking
+      a swatch swaps the whole gallery, same interaction as the thumbnail
+      gallery itself). When absent, the existing image_url + gallery_urls
+      behavior is untouched — this is additive, not a replacement. */
+  function selectColorAt(idx){
+    const color = currentProduct.colors[idx];
+    selectedColorName = color.name;
+    const images = Array.isArray(color.images) ? color.images.filter(Boolean) : [];
+    currentImages = images.length ? images : [currentProduct.image_url];
+    currentIndex = 0;
+    document.querySelectorAll('.color-option').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+    renderGalleryChrome();
+    updateOrderLink();
+  }
+
+  function selectSize(value){
+    selectedSize = (selectedSize === value) ? null : value; // clicking the active size deselects it
+    document.querySelectorAll('.size-chip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.size === selectedSize);
+    });
+    updateOrderLink();
+  }
+
+  function updateOrderLink(){
+    const link = document.getElementById('orderWhatsapp');
+    if(!link || !currentProduct) return;
+    const message = buildProductOrderMessage(currentProduct, currentCurrency, selectedColorName, selectedSize);
+    link.href = buildWhatsAppLink(currentBuyPhone, message);
+  }
+
+  function productTemplate(p, currency, buyPhone){
+    const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
+
+    if(hasColors){
+      const firstImages = Array.isArray(p.colors[0].images) ? p.colors[0].images.filter(Boolean) : [];
+      currentImages = firstImages.length ? firstImages : [p.image_url];
+      selectedColorName = p.colors[0].name;
+    }else{
+      // No colors — fall back to the plain image_url + gallery_urls gallery.
+      const galleryUrls = Array.isArray(p.gallery_urls) ? p.gallery_urls.filter(Boolean) : [];
+      currentImages = [p.image_url].concat(galleryUrls);
+      selectedColorName = null;
+    }
+    currentIndex = 0;
+    selectedSize = null;
+
+    const colorsHtml = hasColors ? `
+      <div class="colors-block">
+        <h4>${t('product.colors_available')}</h4>
+        <div class="color-options">
+          ${p.colors.map((c, i) => `
+            <button type="button" class="color-option${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="${c.name}">
+              <span class="swatch-circle" style="background-color:${c.hex || '#8A8A8A'}"></span>
+              <span>${c.name}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>` : '';
+
+    // fabrics here shows the FULL list linked to the product (not just the
+    // show_on_card subset used by the catalog marquee) — display-only.
+    const fabrics = Array.isArray(p.fabrics) ? p.fabrics.filter(f => f && f.name) : [];
+    const fabricsHtml = fabrics.length ? `
+      <div class="fabrics-block">
+        <h4>${t('product.fabrics')}</h4>
+        <div class="fabrics-list">
+          ${fabrics.map(f => `
+            <span class="fabric-chip"><span class="dot" style="background-color:${f.strip_color || 'var(--gold-2)'}"></span>${localizedField(f, 'name')}</span>
+          `).join('')}
+        </div>
+      </div>` : '';
+
+    // sizes is optional — if empty/missing, hide the whole block.
+    const sizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
+    const sizesHtml = sizes.length ? `
+      <div class="sizes-block">
+        <h4>${t('product.sizes_available')}</h4>
+        <div class="sizes-list">${sizes.map(s => `<span class="size-chip" data-size="${s}">${s}</span>`).join('')}</div>
+      </div>` : '';
+
+    return `
+      <div class="product-wrap">
+        <div class="gallery">
+          <div class="product-image">
+            <img id="mainProductImg" src="${currentImages[0]}" alt="${localizedField(p, 'name')}" width="900" height="1125">
+            <div id="galleryNavHost"></div>
+          </div>
+          <div id="galleryThumbsHost"></div>
+        </div>
+
+        <div class="product-info">
+          <h1>${localizedField(p, 'name')}</h1>
+          <p class="description selectable">${localizedField(p, 'full_desc') || localizedField(p, 'blurb')}</p>
+
+          <div class="price-block">${renderPriceHTML(p, currency)}</div>
+          ${colorsHtml}
+          ${sizesHtml}
+          ${fabricsHtml}
+
+          <p class="custom-note">${t('product.custom_note')}</p>
+          <a href="custom-order.html" class="custom-order-link">${t('product.custom_order_link')}</a>
+
+          <a href="#" id="orderWhatsapp" class="whatsapp-cta" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span>${t('product.order_whatsapp')}</span>
+          </a>
+        </div>
+      </div>`;
+  }
+
+  (async function init(){
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const root = document.getElementById('productRoot');
+    const settings = await getSettings();
+
+    const waLinkHeader = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
+    document.getElementById('headerWhatsapp').href = waLinkHeader;
+
+    const footerContact = document.getElementById('footerContact');
+    footerContact.innerHTML = renderFooterContact(settings);
+    document.addEventListener('langchange', function(){ footerContact.innerHTML = renderFooterContact(settings);  document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry')); });
+
+    if(!id){
+      root.innerHTML = `<div class="not-found"><p>${t('product.no_id')} <a href="${withSiteParam('collection.html')}">${t('product.browse_collection')}</a></p></div>`;
+      return;
+    }
+
+    const product = (settings.products_v2 || []).find(p => String(p.id) === id) || null;
+
+    if(!product){
+      root.innerHTML = `<div class="not-found"><p>${t('product.unavailable')} <a href="${withSiteParam('collection.html')}">${t('product.browse_collection')}</a></p></div>`;
+      return;
+    }
+
+    currentProduct = product;
+    currentCurrency = settings.currency;
+    currentBuyPhone = settings.buy_phone;
+
+    document.title = `${localizedField(product, 'name')} — ELITEDRESS`;
+    document.getElementById('breadcrumbCurrent').textContent = localizedField(product, 'name');
+
+    // renderProduct() بترسم كل شي من الصفر (القالب + المعرض + زر الطلب)
+    // — لازمة تتكرر لما تتبدّل اللغة لأنه renderPriceHTML/"الألوان
+    // المتوفرة"/"الأقمشة"/زر واتساب... كلها نصوص متولّدة بالجافاسكربت
+    // ومطبوعة جوا HTML وقت الرسم، مش data-i18n بيتحدّث لحاله. بنحافظ
+    // على اللون والمقاس المختارين قبل إعادة الرسم عشان ما نفقدهم.
+    function renderProduct(){
+      const keepColorName = selectedColorName;
+      const keepSize = selectedSize;
+
+      root.innerHTML = productTemplate(product, settings.currency, settings.buy_phone);
+      initCountdowns(root);
+      renderGalleryChrome();
+
+      if(keepColorName && Array.isArray(product.colors)){
+        const idx = product.colors.findIndex(c => c.name === keepColorName);
+        if(idx > -1) selectColorAt(idx);
+      }
+      if(keepSize){
+        selectedSize = keepSize;
+        document.querySelectorAll('.size-chip').forEach(chip => {
+          chip.classList.toggle('active', chip.dataset.size === selectedSize);
+        });
+      }
+      updateOrderLink();
+
+      document.querySelectorAll('.color-option').forEach(el => {
+        el.addEventListener('click', () => selectColorAt(parseInt(el.dataset.index, 10)));
+      });
+      document.querySelectorAll('.size-chip').forEach(chip => {
+        chip.addEventListener('click', () => selectSize(chip.dataset.size));
+      });
+    }
+
+    renderProduct();
+
+    // applyLang() بتحدّث كل [data-i18n] تلقائيًا لما تتبدّل اللغة، وهاد بيشمل
+    // وسم <title> نفسه (لأنه بالأصل عليه data-i18n لحالة "ما في منتج بعد")
+    // فبيرجعه للعنوان العام. هيك منضمن إنه يرجع ياخد اسم المنتج الصح.
+    document.addEventListener('langchange', function(){
+      document.title = `${localizedField(product, 'name')} — ELITEDRESS`;
+      document.getElementById('breadcrumbCurrent').textContent = localizedField(product, 'name');
+      renderProduct();
+    });
+  })();
+</script>
+
+</body>
+</html>

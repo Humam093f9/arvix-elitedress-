@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="collection.page_title">المجموعة — ELITEDRESS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark latin">E</span>
+    <span class="brand-name latin">ELITEDRESS</span>
+  </div>
+
+  <button class="nav-toggle" id="navToggle" data-i18n-aria="nav.menu_aria" aria-label="فتح القائمة" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="index.html" data-i18n="nav.home">الرئيسية</a></li>
+      <li><a href="collection.html" class="active" data-i18n="nav.collection">المجموعة</a></li>
+      <li><a href="about.html" data-i18n="nav.about">من نحن</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">تواصل معنا</a></li>
+      <li><a href="custom-order.html" data-i18n="nav.custom">فصّلي فستانك</a></li>
+    </ul>
+  </nav>
+
+  <a href="#" class="icon-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </a>
+  <button type="button" class="icon-btn lang-toggle" id="langToggle" aria-label="Switch language">EN</button>
+</header>
+
+<section class="page-hero reveal-on-scroll">
+  <p class="page-eyebrow" data-i18n="collection.eyebrow">تشكيلتنا الكاملة</p>
+  <h1 data-i18n="collection.title">المجموعة</h1>
+  <p data-i18n="collection.subtitle">تصفّحي كل فساتيننا في مكان واحد، أو فلتري حسب الفئة.</p>
+</section>
+
+<div class="filters" id="filters" role="tablist" aria-label="فلترة حسب الفئة" hidden></div>
+
+<div class="product-grid" id="productGrid">
+  <p class="empty-state" data-i18n="collection.loading">جاري تحميل التشكيلة...</p>
+</div>
+
+<footer>
+  <span class="latin footer-brand">ELITEDRESS</span>
+  <div class="footer-contact" id="footerContact"></div>
+  <p>© 2026 ELITEDRESS. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  initNav();
+
+  function fabricBadgeTemplate(f){
+    return `
+      <div class="fabric-strip" style="--fabric-from-a:${f.ribbon_from_a};--fabric-to-a:${f.ribbon_to_a};--fabric-mid-a:${f.ribbon_mid_a}">
+        <div class="fabric-thumb"${f.image_url ? '' : ` style="background-color:${f.strip_color || 'var(--gold-2)'}"`}>${f.image_url ? `<img src="${f.image_url}" alt="" loading="lazy">` : ''}</div>
+        <span class="fabric-name-text">${localizedField(f, 'name')}</span>
+      </div>`;
+  }
+
+  function cardTemplate(product, currency, fabricDetails){
+    const cardFabrics = getCardFabrics(product, fabricDetails);
+    // Row is entirely omitted when there are no show_on_card fabrics for
+    // this product — same hide-if-empty rule as everywhere else. It sits
+    // ON TOP of the image itself (bottom-right corner, overlapping the
+    // photo — not below/outside it). Each fabric gets its own fixed-width
+    // capsule badge (not one badge that rotates between them) —
+    // column-reverse stacks them so the first fabric sits at the bottom
+    // (closest to the image's bottom edge) and each following one stacks
+    // above it. All visible at once, no time-based switching.
+    const badgesHtml = cardFabrics.length ? `
+      <div class="fabric-strip-row">
+        ${cardFabrics.map(fabricBadgeTemplate).join('')}
+      </div>` : '';
+
+    return `
+      <a href="${withSiteParam('product.html?id=' + encodeURIComponent(product.id))}" class="card-link reveal-on-scroll" aria-label="${localizedField(product, 'name')}">
+        <article class="card">
+          <div class="card-img">
+            <img src="${product.image_url}" alt="${localizedField(product, 'name')}" loading="lazy" width="900" height="1125">
+            <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
+            <span class="corner corner-bl"></span><span class="corner corner-br"></span>
+            ${badgesHtml}
+          </div>
+          <div class="card-body">
+            <h3>${localizedField(product, 'name')}</h3>
+            <p>${localizedField(product, 'blurb')}</p>
+            ${renderPriceHTML(product, currency)}
+          </div>
+        </article>
+      </a>`;
+  }
+
+  (async function init(){
+    const settings = await getSettings();
+    const grid = document.getElementById('productGrid');
+    const filtersHost = document.getElementById('filters');
+    const products = settings.products_v2 || [];
+    const categories = settings.categories || [];
+
+    let currentFilter = 'all';
+    const params = new URLSearchParams(window.location.search);
+    const requestedCat = params.get('cat');
+    if(requestedCat && categories.some(c => c.id === requestedCat)){
+      currentFilter = requestedCat;
+    }
+
+    async function renderGrid(){
+      const filtered = currentFilter === 'all'
+        ? products
+        : products.filter(p => p.category_id === currentFilter);
+
+      if(filtered.length === 0){
+        grid.innerHTML = `<p class="empty-state">${t('collection.empty_filtered')}</p>`;
+        return;
+      }
+
+      // Resolve fabric thumbnails (from the Arvix fabrics table) for every
+      // show_on_card fabric across the filtered products before rendering,
+      // so cards never flash an empty thumbnail on first paint.
+      const fabricIds = new Set();
+      filtered.forEach(p => {
+        (p.fabrics || []).forEach(f => { if(f && f.show_on_card && f.fabric_id) fabricIds.add(f.fabric_id); });
+      });
+      const fabricDetails = await getFabricDetails(Array.from(fabricIds));
+
+      grid.innerHTML = filtered.map(p => cardTemplate(p, settings.currency, fabricDetails)).join('');
+      armImageFallbacksIn(grid);
+      armScrollReveal(grid);
+      initCountdowns(grid);
+    }
+
+    function renderFilters(){
+      // Per Arvix: if there are 0 or 1 categories, hide the filter bar entirely.
+      if(categories.length <= 1){
+        filtersHost.hidden = true;
+        return;
+      }
+      filtersHost.hidden = false;
+      const tabs = [{ id: 'all', label: t('filters.all') }].concat(categories);
+
+      filtersHost.innerHTML = tabs.map(tab => `
+        <button class="filter-tab${tab.id === currentFilter ? ' active' : ''}" data-cat="${tab.id}" role="tab" aria-selected="${tab.id === currentFilter}">
+          ${localizedField(tab, 'label')}
+        </button>
+      `).join('');
+
+      filtersHost.querySelectorAll('.filter-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.dataset.cat;
+          filtersHost.querySelectorAll('.filter-tab').forEach(b => {
+            b.classList.toggle('active', b === btn);
+            b.setAttribute('aria-selected', b === btn);
+          });
+          renderGrid();
+          const url = new URL(window.location);
+          if(currentFilter === 'all'){ url.searchParams.delete('cat'); }
+          else{ url.searchParams.set('cat', currentFilter); }
+          window.history.replaceState({}, '', url);
+        });
+      });
+    }
+
+    if(products.length === 0){
+      grid.innerHTML = `<p class="empty-state">${t('collection.empty_all')}</p>`;
+    }else{
+      renderFilters();
+      renderGrid();
+    }
+
+    // تحديث فوري لكل النصوص المتولّدة بالجافاسكربت (الفلاتر + الكروت) لما
+    // تتبدّل اللغة، بدل ما تضل عربي لحد ما تعيد تحميل الصفحة.
+    document.addEventListener('langchange', function(){
+      document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry_collection'));
+      if(products.length === 0) return;
+      renderFilters();
+      renderGrid();
+    });
+
+    // Header + footer contact wiring
+    const waLink = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry_collection'));
+    document.getElementById('headerWhatsapp').href = waLink;
+
+    const footerContact = document.getElementById('footerContact');
+    footerContact.innerHTML = renderFooterContact(settings);
+  })();
+</script>
+
+</body>
+</html>

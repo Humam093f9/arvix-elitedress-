@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="home.page_title">ELITEDRESS — أناقة لا تُنسى</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  :root{
+    --bg-1:#0A0E17;
+    --bg-2:#12161F;
+    --gold:#C9A15A;
+    --gold-2:#D4AF37;
+    --cream:#F5F1E8;
+    --light-bg:#F3EFE6;
+    --border-gold:rgba(201,161,90,0.3);
+    --gray-soft:#B9B6AE;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg-1);
+    color:var(--cream);
+    font-family:'Noto Kufi Arabic', sans-serif;
+    font-weight:400;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+  .latin{
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  ::selection{background:var(--gold);color:var(--bg-1);}
+
+  :focus-visible{
+    outline:2px solid var(--gold-2);
+    outline-offset:3px;
+  }
+
+  /* reveal on scroll */
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .8s ease var(--stagger-delay, 0s), transform .8s ease var(--stagger-delay, 0s);
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{transition:none;opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ===== Scroll progress thread ===== */
+  .scroll-thread-track{
+    position:fixed;
+    top:0;
+    right:14px;
+    width:2px;
+    height:100vh;
+    z-index:200;
+    pointer-events:none;
+  }
+  .scroll-thread{
+    width:100%;
+    height:100%;
+    background:var(--gold);
+    box-shadow:0 0 8px rgba(201,161,90,0.6);
+    transform:scaleY(var(--scroll-progress, 0));
+    transform-origin:top;
+    will-change:transform;
+  }
+  @media (max-width:720px){
+    .scroll-thread-track{width:1px;right:8px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .scroll-thread{transition:none;}
+  }
+
+  /* ===== Header ===== */
+  header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 6vw;
+    background:rgba(10,14,23,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-gold);
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .brand-mark{
+    width:38px;height:38px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-2);
+    font-family:'Cormorant Garamond', serif;
+    font-size:18px;
+    flex-shrink:0;
+  }
+
+  .brand-name{
+    font-family:'Cormorant Garamond', serif;
+    letter-spacing:0.32em;
+    font-size:19px;
+    color:var(--cream);
+    font-weight:500;
+  }
+
+  nav ul{
+    display:flex;
+    gap:38px;
+  }
+
+  nav a{
+    font-size:15px;
+    color:var(--cream);
+    position:relative;
+    padding-bottom:6px;
+    transition:color .3s ease;
+  }
+  nav a:hover{color:var(--gold-2);}
+
+  nav a::after{
+    content:"";
+    position:absolute;
+    right:0;left:0;
+    bottom:0;
+    height:1px;
+    background:var(--gold-2);
+    transform:scaleX(0);
+    transform-origin:center;
+    transition:transform .35s ease;
+  }
+  nav a.active{color:var(--gold-2);}
+  nav a:hover::after,
+  nav a.active::after{
+    transform:scaleX(1);
+  }
+
+  .whatsapp-btn{
+    width:40px;height:40px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-2);
+    transition:background .3s ease, color .3s ease, transform .3s ease;
+    flex-shrink:0;
+  }
+  .whatsapp-btn:hover{
+    background:var(--gold-2);
+    color:var(--bg-1);
+    transform:scale(1.06);
+  }
+
+  .nav-toggle{display:none;}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 6vw 80px;
+    overflow:hidden;
+    background-color:#0A0E17;
+    background-image:url('img/hero-silk-chandelier.jpg');
+    background-image:-webkit-image-set(url('img/hero-silk-chandelier.webp') 1x);
+    background-image:image-set(url('img/hero-silk-chandelier.webp') 1x, url('img/hero-silk-chandelier.jpg') 1x);
+    background-size:cover;
+    background-position:top right;
+    background-repeat:no-repeat;
+  }
+
+  @media (max-width:768px){
+    .hero{
+      background-image:url('img/hero-silk-chandelier-mobile.jpg');
+      background-image:-webkit-image-set(url('img/hero-silk-chandelier-mobile.webp') 1x);
+      background-image:image-set(url('img/hero-silk-chandelier-mobile.webp') 1x, url('img/hero-silk-chandelier-mobile.jpg') 1x);
+      background-size:cover;
+      background-position:top center;
+    }
+  }
+
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background:rgba(0,0,0,0.5);
+    pointer-events:none;
+  }
+
+  /* Extra scrim focused behind the text block for guaranteed contrast */
+  .hero-text-scrim{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(92vw, 760px);
+    height:min(80vh, 620px);
+    z-index:1;
+    pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(5,7,12,0.55) 0%, rgba(5,7,12,0.28) 55%, rgba(5,7,12,0) 80%);
+  }
+
+  /* Ambient shimmer sweep across the silk */
+  .hero-shimmer{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .hero-shimmer::before{
+    content:"";
+    position:absolute;
+    top:-20%;
+    left:-70%;
+    width:55%;
+    height:140%;
+    background:linear-gradient(100deg, transparent 0%, rgba(212,175,55,0.07) 40%, rgba(255,241,199,0.11) 50%, rgba(212,175,55,0.07) 60%, transparent 100%);
+    filter:blur(6px);
+    transform:translateX(0) skewX(-12deg);
+    animation:shimmerSweep 14s ease-in-out infinite;
+    mix-blend-mode:soft-light;
+  }
+  @keyframes shimmerSweep{
+    0%{transform:translateX(0) skewX(-12deg);}
+    50%{transform:translateX(300%) skewX(-12deg);}
+    100%{transform:translateX(300%) skewX(-12deg);}
+  }
+
+  /* Glimmer dots over the chandelier area (top right) */
+  .chandelier-glimmer{
+    position:absolute;
+    top:0;
+    right:0;
+    width:46%;
+    height:38%;
+    z-index:1;
+    pointer-events:none;
+  }
+  .glimmer-dot{
+    position:absolute;
+    width:5px;height:5px;
+    border-radius:50%;
+    background:#FFF3D6;
+    box-shadow:0 0 6px 1px rgba(255,233,179,0.7);
+    opacity:0;
+    animation:glimmerPulse 3.5s ease-in-out infinite;
+  }
+  @keyframes glimmerPulse{
+    0%,100%{opacity:0;transform:scale(0.7);}
+    50%{opacity:0.85;transform:scale(1.1);}
+  }
+
+  /* Floating gold particles */
+  .particles-layer{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .particle{
+    position:absolute;
+    width:3px;height:3px;
+    border-radius:50%;
+    background:var(--gold-2);
+    opacity:0.2;
+    animation:particleFloat linear infinite;
+    will-change:transform;
+  }
+  @keyframes particleFloat{
+    0%{transform:translateY(10vh) translateX(0);opacity:0;}
+    10%{opacity:0.3;}
+    90%{opacity:0.2;}
+    100%{transform:translateY(-40vh) translateX(20px);opacity:0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero-shimmer::before,
+    .glimmer-dot,
+    .particle{animation:none !important;display:none;}
+  }
+
+  .hero-content{
+    position:relative;
+    z-index:2;
+    max-width:720px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .hero-mark{
+    width:72px;height:72px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Cormorant Garamond', serif;
+    font-size:30px;
+    color:var(--gold-2);
+    margin-bottom:14px;
+    background:rgba(201,161,90,0.05);
+  }
+
+  .hero-wordmark{
+    font-size:15px;
+    letter-spacing:0.34em;
+    color:#EAD9A0;
+    font-weight:500;
+    margin-bottom:26px;
+    padding-right:0.34em; /* balance optical trailing space added by letter-spacing */
+  }
+
+  .eyebrow{
+    color:var(--gold-2);
+    font-size:15px;
+    letter-spacing:0.08em;
+    margin-bottom:14px;
+  }
+
+  .hero h1{
+    font-family:'Amiri', serif;
+    font-weight:700;
+    font-size:clamp(48px, 8vw, 88px);
+    line-height:1.15;
+    color:var(--cream);
+    margin-bottom:20px;
+  }
+
+  .hero h1 .word{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .hero h1 .word.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero h1 .word{transition:none;opacity:1;transform:none;}
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:22px;
+    color:var(--gold-2);
+  }
+  .divider span{
+    width:44px;height:1px;
+    background:var(--border-gold);
+  }
+
+  .hero p{
+    color:var(--gray-soft);
+    font-size:17px;
+    line-height:2;
+    margin-bottom:38px;
+    max-width:520px;
+  }
+
+  .cta-btn{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg, var(--gold-2), var(--gold));
+    color:var(--bg-1);
+    font-weight:600;
+    font-size:16px;
+    padding:16px 40px;
+    border-radius:999px;
+    overflow:hidden;
+    transition:transform .35s ease, box-shadow .35s ease;
+    box-shadow:0 10px 30px rgba(212,175,55,0.15);
+  }
+  .cta-btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:50%;
+    height:100%;
+    background:linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+    transform:translateX(0) skewX(-18deg);
+    transition:transform .6s ease;
+  }
+  .cta-btn:hover::before{
+    transform:translateX(260%) skewX(-18deg);
+  }
+  .cta-btn:hover{
+    transform:scale(1.045);
+    box-shadow:0 14px 36px rgba(212,175,55,0.3);
+  }
+
+  .scroll-indicator{
+    margin-top:56px;
+    color:var(--gold-2);
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(8px);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .scroll-indicator{animation:none;}
+  }
+
+  /* ===== Features bar ===== */
+  .features-wrap{
+    padding:0 6vw 100px;
+    margin-top:-10px;
+    position:relative;
+    z-index:2;
+  }
+
+  .features{
+    max-width:1180px;
+    margin:0 auto;
+    background:rgba(18,22,31,0.6);
+    border:1px solid var(--border-gold);
+    border-radius:18px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    backdrop-filter:blur(6px);
+  }
+
+  .feature{
+    padding:44px 28px;
+    text-align:center;
+    border-left:1px solid var(--border-gold);
+  }
+  .feature:last-child{border-left:none;}
+
+  .feature-icon{
+    width:52px;height:52px;
+    margin:0 auto 18px;
+    border:1px solid var(--border-gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-2);
+  }
+  .feature-icon svg{width:24px;height:24px;}
+  /* Icons are fully visible by default (plain stroke, no JS required).
+     The "draw" animation below is a progressive enhancement only:
+     JS sets stroke-dasharray/stroke-dashoffset inline right before
+     animating, so if JS fails or loads late the icon never disappears. */
+  .feature-icon svg.draw path{
+    transition:stroke-dashoffset .8s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .feature-icon svg path{stroke-dasharray:none !important;stroke-dashoffset:0 !important;transition:none !important;}
+  }
+
+  .feature h3{
+    font-size:16px;
+    font-weight:600;
+    color:var(--cream);
+    margin-bottom:8px;
+  }
+
+  .feature p{
+    font-size:13px;
+    color:var(--gray-soft);
+    line-height:1.7;
+  }
+
+  @media (max-width:900px){
+    .features{grid-template-columns:repeat(2,1fr);}
+    .feature:nth-child(2){border-left:none;}
+    .feature{border-bottom:1px solid var(--border-gold);}
+  }
+  @media (max-width:560px){
+    .features{grid-template-columns:1fr;}
+    .feature{border-left:none;}
+  }
+
+  /* ===== Collection section ===== */
+  .collection{
+    position:relative;
+    background:var(--light-bg);
+    color:#20242C;
+    padding:100px 6vw 110px;
+    text-align:center;
+  }
+
+  .section-wave{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    transform:translateY(-99%);
+    line-height:0;
+    pointer-events:none;
+  }
+  .section-wave svg{
+    width:100%;
+    height:70px;
+    display:block;
+  }
+
+  .collection h2{
+    font-family:'Amiri', serif;
+    font-size:clamp(30px, 4vw, 42px);
+    font-weight:700;
+    margin-bottom:18px;
+  }
+
+  .collection .divider{color:#8a7440;}
+  .collection .divider span{background:rgba(138,116,64,0.35);}
+
+  .collection-sub{
+    color:#6b6558;
+    font-size:15px;
+    margin-bottom:56px;
+  }
+
+  .grid-cards{
+    max-width:1200px;
+    margin:0 auto 54px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:26px;
+    text-align:start;
+  }
+
+  .card-link{
+    display:block;
+    color:inherit;
+    text-decoration:none;
+  }
+
+  .card{
+    position:relative;
+    border-radius:24px 24px 0 0;
+    overflow:hidden;
+    background:#20242C;
+    transition:box-shadow 0.3s ease;
+  }
+
+  .card-img{
+    position:relative;
+    aspect-ratio:4/5;
+    overflow:hidden;
+    border-radius:24px 24px 0 0;
+    background:#0A0E17;
+  }
+
+  .card-img img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform 0.3s ease;
+  }
+
+  .card:hover .card-img img{transform:scale(1.03);}
+  .card:hover{box-shadow:0 16px 38px rgba(201,161,90,0.32);}
+
+  .corner{
+    position:absolute;
+    width:20px;height:20px;
+    border-color:var(--gold-2);
+    border-style:solid;
+    border-width:0;
+    opacity:0;
+    transition:opacity .35s ease;
+    pointer-events:none;
+  }
+  .corner-tl{top:10px;right:10px;border-top-width:1.5px;border-right-width:1.5px;}
+  .corner-tr{top:10px;left:10px;border-top-width:1.5px;border-left-width:1.5px;}
+  .corner-bl{bottom:10px;right:10px;border-bottom-width:1.5px;border-right-width:1.5px;}
+  .corner-br{bottom:10px;left:10px;border-bottom-width:1.5px;border-left-width:1.5px;}
+  .card:hover .corner{opacity:1;}
+
+  .card-body{
+    padding:20px 8px 8px;
+  }
+
+  .card-body h3{
+    font-family:'Amiri', serif;
+    font-size:19px;
+    color:#20242C;
+    margin-bottom:6px;
+  }
+
+  .card-body p{
+    font-size:13px;
+    color:#8a8577;
+  }
+
+  .card-body::after{
+    content:"";
+    display:block;
+    width:34px;
+    height:1px;
+    background:var(--gold-2);
+    margin-top:14px;
+  }
+
+  @media (max-width:980px){
+    .grid-cards{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:560px){
+    .grid-cards{grid-template-columns:1fr;}
+  }
+
+  .outline-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--gold-2);
+    color:#8a7440;
+    font-weight:600;
+    font-size:15px;
+    padding:15px 38px;
+    border-radius:999px;
+    background:transparent;
+    transition:background .3s ease, color .3s ease;
+  }
+  .outline-btn:hover{
+    background:var(--gold-2);
+    color:#20242C;
+  }
+
+  /* mobile nav */
+  @media (max-width:860px){
+    nav{
+      position:fixed;
+      inset:0 0 0 auto;
+      top:74px;
+      width:78vw;
+      max-width:320px;
+      height:calc(100vh - 74px);
+      background:var(--bg-2);
+      border-left:1px solid var(--border-gold);
+      transform:translateX(100%);
+      transition:transform .4s ease;
+      padding:36px 28px;
+    }
+    nav.open{transform:translateX(0);}
+    nav ul{flex-direction:column;gap:26px;}
+    .nav-toggle{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      width:26px;
+    }
+    .nav-toggle span{
+      height:1px;width:100%;background:var(--gold-2);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-thread-track" aria-hidden="true"><div class="scroll-thread" id="scrollThread"></div></div>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark latin">E</span>
+    <span class="brand-name latin">ELITEDRESS</span>
+  </div>
+
+  <button class="nav-toggle" id="navToggle" data-i18n-aria="nav.menu_aria" aria-label="فتح القائمة" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="#home" class="active" data-i18n="nav.home">الرئيسية</a></li>
+      <li><a href="collection.html" data-i18n="nav.collection">المجموعة</a></li>
+      <li><a href="about.html" data-i18n="nav.about">من نحن</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">تواصل معنا</a></li>
+      <li><a href="custom-order.html" data-i18n="nav.custom">فصّلي فستانك</a></li>
+    </ul>
+  </nav>
+
+  <a href="#" class="whatsapp-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </a>
+  <button type="button" class="icon-btn lang-toggle" id="langToggle" aria-label="Switch language">EN</button>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-shimmer" aria-hidden="true"></div>
+  <div class="chandelier-glimmer" id="chandelierGlimmer" aria-hidden="true"></div>
+  <div class="particles-layer" id="particlesLayer" aria-hidden="true"></div>
+  <div class="hero-text-scrim" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-mark latin" aria-hidden="true">E</div>
+    <div class="hero-wordmark latin">ELITEDRESS</div>
+    <p class="eyebrow reveal" data-i18n="home.eyebrow">فساتين تُصنع من أجلك</p>
+    <h1 id="heroTitle">أناقة لا تُنسى</h1>
+    <div class="divider reveal"><span></span>✷<span></span></div>
+    <p class="reveal" data-i18n="home.hero_subtitle">تصاميم حصرية لِلياليك الخاصة، حيث تلتقي الفخامة بالتفاصيل.</p>
+    <a href="#collection" class="cta-btn reveal" data-i18n="home.hero_cta">✷ تصفحي المجموعة</a>
+    <div class="scroll-indicator" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+</section>
+
+<div class="features-wrap">
+  <div class="features reveal">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3.5a1.4 1.4 0 1 1 0 2.8"/><path d="M12 5.2 3 11l1 1.4L12 9l8 3.4 1-1.4-9-5.8z"/><path d="M4 12.5 2 20h20l-2-7.5"/></svg>
+      </div>
+      <h3 data-i18n="home.feat1_title">تصاميم حصرية</h3>
+      <p data-i18n="home.feat1_text">كل قطعة بتصميم فريد</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 3h10l4 6-11 12L5 9l2-6z"/><path d="M5 9h14M9 3l3 6 3-6M12 9 8.5 21M12 9l3.5 12"/></svg>
+      </div>
+      <h3 data-i18n="home.feat2_title">أقمشة فاخرة</h3>
+      <p data-i18n="home.feat2_text">جودة عالية وتفاصيل راقية</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="6.5" r="2.6"/><circle cx="6" cy="17.5" r="2.6"/><path d="M20 5 8.3 14M8.3 10 20 19"/></svg>
+      </div>
+      <h3 data-i18n="home.feat3_title">تفصيل حسب الطلب</h3>
+      <p data-i18n="home.feat3_text">مقاسات مثالية لك</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8.5 7 11l5-6.5L17 11l4-2.5-1.7 9.5H4.7L3 8.5z"/><path d="M6.5 18.5h11"/><circle cx="12" cy="4" r="1.1" fill="currentColor" stroke="none"/><circle cx="3" cy="8" r="1" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <h3 data-i18n="home.feat4_title">خدمة راقية</h3>
+      <p data-i18n="home.feat4_text">تجربة تسوق استثنائية</p>
+    </div>
+  </div>
+</div>
+
+<section class="collection" id="collection">
+  <div class="section-wave" aria-hidden="true">
+    <svg viewBox="0 0 1200 70" preserveAspectRatio="none">
+      <path d="M0,70 C200,10 350,60 600,35 C850,10 1000,55 1200,20 L1200,70 Z" fill="#F3EFE6"/>
+    </svg>
+  </div>
+  <h2 class="reveal" data-i18n="home.collection_title">تشكيلة مختارة بعناية</h2>
+  <div class="divider reveal"><span></span>✷<span></span></div>
+  <p class="collection-sub reveal" data-i18n="home.collection_subtitle">نقدم مجموعة متنوعة تناسب جميع المناسبات والأذواق الراقية</p>
+
+  <div class="grid-cards">
+    <a href="collection.html?cat=evening" class="card-link" aria-label="فساتين السهرة" data-i18n-aria="cat.evening"><article class="card reveal">
+      <div class="card-img">
+        <picture>
+          <source srcset="img/card-evening.webp" type="image/webp">
+          <img src="img/card-evening.jpg" alt="فساتين السهرة" data-i18n-alt="cat.evening" loading="lazy" width="900" height="1125">
+        </picture>
+          <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
+        </div>
+      <div class="card-body">
+        <h3 data-i18n="cat.evening">فساتين السهرة</h3>
+        <p data-i18n="home.cat_evening_tag">لمسة من الفخامة</p>
+      </div>
+    </article></a>
+
+    <a href="collection.html?cat=wedding" class="card-link" aria-label="فساتين الأعراس" data-i18n-aria="cat.wedding"><article class="card reveal">
+      <div class="card-img">
+        <picture>
+          <source srcset="img/card-wedding.webp" type="image/webp">
+          <img src="img/card-wedding.jpg" alt="فساتين الأعراس" data-i18n-alt="cat.wedding" loading="lazy" width="900" height="1125">
+        </picture>
+          <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
+        </div>
+      <div class="card-body">
+        <h3 data-i18n="cat.wedding">فساتين الأعراس</h3>
+        <p data-i18n="home.cat_wedding_tag">لحظتك الأجمل</p>
+      </div>
+    </article></a>
+
+    <a href="collection.html?cat=engagement" class="card-link" aria-label="فساتين الخطوبة" data-i18n-aria="cat.engagement"><article class="card reveal">
+      <div class="card-img">
+        <picture>
+          <source srcset="img/card-engagement.webp" type="image/webp">
+          <img src="img/card-engagement.jpg" alt="فساتين الخطوبة" data-i18n-alt="cat.engagement" loading="lazy" width="900" height="1125">
+        </picture>
+          <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
+        </div>
+      <div class="card-body">
+        <h3 data-i18n="cat.engagement">فساتين الخطوبة</h3>
+        <p data-i18n="home.cat_engagement_tag">بدايات ساحرة</p>
+      </div>
+    </article></a>
+
+    <a href="collection.html?cat=royal" class="card-link" aria-label="فساتين ملكية" data-i18n-aria="cat.royal"><article class="card reveal">
+      <div class="card-img">
+        <picture>
+          <source srcset="img/card-royal.webp" type="image/webp">
+          <img src="img/card-royal.jpg" alt="فساتين ملكية" data-i18n-alt="cat.royal" loading="lazy" width="900" height="1125">
+        </picture>
+          <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
+        </div>
+      <div class="card-body">
+        <h3 data-i18n="cat.royal">فساتين ملكية</h3>
+        <p data-i18n="home.cat_royal_tag">فخامة بلا حدود</p>
+      </div>
+    </article></a>
+  </div>
+
+  <a href="collection.html" class="outline-btn reveal" data-i18n="home.explore_more">✷ استكشفي المزيد</a>
+</section>
+
+<footer style="background:var(--bg-1);padding:40px 6vw;text-align:center;border-top:1px solid var(--border-gold);color:var(--gray-soft);font-size:13px;">
+  <p class="latin" style="letter-spacing:.2em;color:var(--gold-2);margin-bottom:6px;">ELITEDRESS</p>
+  <div class="footer-contact" id="footerContact" style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-bottom:12px;"></div>
+  <p>© 2026 ELITEDRESS. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span></p>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+  (async function initArvixWiring(){
+    const settings = await getSettings();
+    const waHeader = document.getElementById('headerWhatsapp');
+    if(waHeader) waHeader.href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
+
+    const footerContact = document.getElementById('footerContact');
+    if(footerContact){
+      footerContact.innerHTML = renderFooterContact(settings);
+      document.addEventListener('langchange', function(){ footerContact.innerHTML = renderFooterContact(settings);  document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry')); });
+    }
+  })();
+</script>
+<script>
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const mainNav = document.getElementById('mainNav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  // ---- Scroll progress thread ----
+  const scrollThread = document.getElementById('scrollThread');
+  let ticking = false;
+  function updateScrollThread(){
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(1, Math.max(0, scrollTop / docHeight)) : 0;
+    scrollThread.style.setProperty('--scroll-progress', progress);
+    scrollThread.style.transform = `scaleY(${progress})`;
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      requestAnimationFrame(updateScrollThread);
+      ticking = true;
+    }
+  }, { passive:true });
+  updateScrollThread();
+
+  // ---- Ambient hero layers (skipped for reduced motion) ----
+  if(!prefersReducedMotion){
+    // Chandelier glimmer dots
+    const glimmerHost = document.getElementById('chandelierGlimmer');
+    const glimmerPositions = [
+      [12,20],[28,10],[45,28],[60,15],[75,32],[85,18],[38,42],[55,45]
+    ];
+    glimmerPositions.forEach(([left, top], i) => {
+      const dot = document.createElement('span');
+      dot.className = 'glimmer-dot';
+      dot.style.left = left + '%';
+      dot.style.top = top + '%';
+      dot.style.animationDelay = (Math.random()*3.5).toFixed(2) + 's';
+      dot.style.animationDuration = (3 + Math.random()*2.5).toFixed(2) + 's';
+      glimmerHost.appendChild(dot);
+    });
+
+    // Floating gold particles
+    const particlesHost = document.getElementById('particlesLayer');
+    const PARTICLE_COUNT = 18;
+    for(let i=0; i<PARTICLE_COUNT; i++){
+      const p = document.createElement('span');
+      p.className = 'particle';
+      p.style.left = (Math.random()*100).toFixed(1) + '%';
+      p.style.animationDelay = (Math.random()*10).toFixed(2) + 's';
+      p.style.animationDuration = (10 + Math.random()*8).toFixed(2) + 's';
+      particlesHost.appendChild(p);
+    }
+  }
+
+  // ---- Hero title word stagger ----
+  // العنوان بياخد نصه من t('home.hero_title') قبل ما يلف كل كلمة بـ<span>
+  // — لازم هيك الترتيب (ترجمة أول، تقطيع بعدين) لأنه data-i18n العادي
+  // كان رح يمسح الـ<span> ويرجع نص عادي أول ما applyLang() تشتغل.
+  const heroTitle = document.getElementById('heroTitle');
+  function wrapHeroTitleWords(){
+    if(!heroTitle) return [];
+    heroTitle.textContent = t('home.hero_title');
+    const words = heroTitle.textContent.trim().split(/\s+/);
+    heroTitle.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+    return Array.from(heroTitle.querySelectorAll('.word'));
+  }
+  if(heroTitle){
+    const wordEls = wrapHeroTitleWords();
+    const titleObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          wordEls.forEach((w, i) => {
+            w.style.transitionDelay = prefersReducedMotion ? '0ms' : (i * 80) + 'ms';
+            w.classList.add('is-visible');
+          });
+          titleObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    titleObserver.observe(heroTitle);
+
+    // لو تبدّلت اللغة، نبدّل النص فورًا وبنفس اللحظة نظهره (بدون إعادة
+    // تشغيل حركة الدخول التدريجي — العنوان أصلًا ظاهر على الأغلب).
+    document.addEventListener('langchange', function(){
+      wrapHeroTitleWords().forEach(w => w.classList.add('is-visible'));
+    });
+  }
+
+  // ---- Feature icon draw-in (progressive enhancement only) ----
+  // Icons are fully visible by default via plain CSS (no dasharray).
+  // Only when this script runs successfully AND the icon scrolls into
+  // view do we briefly set stroke-dasharray/dashoffset and animate it
+  // back to 0 — wrapped in try/catch so any failure just leaves the
+  // icon in its normal, fully-visible default state.
+  if(!prefersReducedMotion){
+    const featureIcons = document.querySelectorAll('.feature-icon svg');
+    featureIcons.forEach(svg => {
+      const iconObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            try{
+              const paths = entry.target.querySelectorAll('path');
+              paths.forEach(path => {
+                const len = path.getTotalLength();
+                path.style.strokeDasharray = len;
+                path.style.strokeDashoffset = len;
+              });
+              entry.target.getBoundingClientRect(); // force reflow
+              requestAnimationFrame(() => {
+                entry.target.classList.add('draw');
+                paths.forEach(path => { path.style.strokeDashoffset = 0; });
+              });
+            }catch(e){
+              // silently fall back — icon stays visible via default CSS
+            }
+            iconObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      iconObserver.observe(svg);
+    });
+  }
+
+  // ---- Card stagger delay (100ms between cards) ----
+  document.querySelectorAll('.grid-cards .card').forEach((card, i) => {
+    card.style.setProperty('--stagger-delay', prefersReducedMotion ? '0ms' : (i * 100) + 'ms');
+  });
+
+  // ---- Fade-in on scroll (general reveal) ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
