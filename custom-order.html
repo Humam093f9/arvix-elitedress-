@@ -76,14 +76,13 @@
 <body>
 
 <header>
-  <div class="brand">
-    <span class="brand-mark latin">E</span>
-    <span class="brand-name latin">ELITEDRESS</span>
-  </div>
-
   <button class="nav-toggle" id="navToggle" data-i18n-aria="nav.menu_aria" aria-label="فتح القائمة" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
+
+  <div class="brand">
+    <span class="brand-name latin">ELITEDRESS</span>
+  </div>
 
   <nav id="mainNav">
     <ul>
@@ -249,18 +248,19 @@
     document.getElementById('footerContact').innerHTML = renderFooterContact(settings);
     document.addEventListener('langchange', function(){ document.getElementById('footerContact').innerHTML = renderFooterContact(settings);  document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry')); });
 
-    // Fabric checklist — built from settings.fabrics_library, plus a fixed
-    // "أخرى" option that reveals the repeatable custom-fabric rows.
+    // Fabric checklist — built from the shared fabrics table (نفس مكتبة
+    // الأقمشة المستخدمة بصفحة المنتج ولوحة التاجر)، بدل settings.fabrics_library
+    // يلي ما فيه أي واجهة إدارة فعلية وكان دايماً فاضي على أي موقع حقيقي.
     // بتترسم مرة وحدة بس (مش بتعيد نفسها لما تتبدّل اللغة) عشان ما تمسح
     // اختيارات المستخدمة الموجودة أصلاً — بس نص "أخرى" نفسه متل باقي
     // نصوص الموقع، بيتحدّث تلقائيًا لأنه data-i18n عادي.
-    const fabrics = Array.isArray(settings.fabrics_library) ? settings.fabrics_library.filter(f => f && f.name) : [];
+    const fabrics = (await getFabricsLibrary()).filter(f => f && f.name);
     const checklistHost = document.getElementById('fabricChecklist');
     checklistHost.innerHTML = fabrics.map((f, i) => `
       <label class="fabric-check-row">
-        <input type="checkbox" data-name="${f.name}">
+        <input type="checkbox" data-name="${localizedField(f, 'name')}">
         <span class="dot" style="background-color:${f.strip_color || 'var(--gold-2)'}"></span>
-        ${f.name}
+        ${localizedField(f, 'name')}
       </label>
     `).join('') + `
       <label class="fabric-check-row">

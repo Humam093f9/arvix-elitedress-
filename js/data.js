@@ -202,3 +202,29 @@ async function getFabricDetails(fabricIds){
 
   return map;
 }
+
+/**
+ * getFabricsLibrary()
+ * --------------------
+ * BUG FIX — صفحة "فصّلي فستانك" (custom-order.html) كانت تبني قائمة
+ * الأقمشة من settings.fabrics_library، وهو حقل ما فيه أي واجهة إدارة
+ * فعلية بلوحة التاجر (ما في مكان يعبّيه التاجر منه)، فكان دايماً فاضي
+ * على أي موقع حقيقي متصل — تظهر فيه خانة "أخرى" بس بدون أي قماش. هاي
+ * الدالة بتجيب القائمة الحقيقية مباشرة من جدول fabrics العام (نفس
+ * المكتبة المستخدمة بصفحة المنتج ولوحة التاجر)، يلي هو دايماً معبّى
+ * ومتاح للقراءة العامة. لو الاتصال فشل (معاينة محلية)، بترجع نفس قائمة
+ * fabrics_library التجريبية تحت كحل احتياطي، بدل ما ترجع فاضية.
+ */
+async function getFabricsLibrary(){
+  try{
+    var res = await SUPA.from('fabrics').select('id,name,name_en,ribbon_from,image_url').order('sort_order', {ascending:true});
+    if(!res.error && res.data && res.data.length){
+      return res.data.map(function(f){
+        return { id: f.id, name: f.name, name_en: f.name_en || '', strip_color: f.ribbon_from || 'var(--gold-2)', image_url: f.image_url || '' };
+      });
+    }
+  }catch(e){
+    // جدول fabrics مو متاح بهالبيئة (معاينة محلية) — رح نكمل بالقيمة الاحتياطية تحت
+  }
+  return PLACEHOLDER_SETTINGS.fabrics_library;
+}
