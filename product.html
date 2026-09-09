@@ -83,6 +83,11 @@
   .color-option.active .swatch-circle{border-color:var(--gold-2);transform:scale(1.14);}
   .color-option span{font-size:11px;color:var(--gray-soft);}
   .color-option.active span{color:var(--gold-2);}
+  /* الخيار الافتراضي (يرجّع الصور الأساسية بس) — دائرة بخط ذهبي مائل بدل
+     أي لون، عشان يبين بوضوح إنه مو لون حقيقي متل باقي الخيارات جنبه. */
+  .swatch-default{
+    background:linear-gradient(135deg, transparent 46%, var(--gold-2) 46%, var(--gold-2) 54%, transparent 54%);
+  }
 
   .fabrics-block{
     border-top:1px solid var(--border-gold);
@@ -243,33 +248,30 @@
     setActiveImage(0);
   }
 
-  /** يجمع صور المنتج العامة (image_url + gallery_urls) مع صور اللون
-      المختار (لو موجودة)، ويشيل أي تكرار — قبل هيك كان اختيار أي لون
-      يمسح الصور العامة نهائيًا ويعرض بس صور ذاك اللون تحديدًا، فكانت
-      الصور العامة ما تظهر أبدًا، وتبديل الألوان ما يغيّر أي شي محسوس لو
-      اللون المختار ماله صور خاصة إضافية (البقيت نفس الصورة الوحيدة). */
-  function buildGalleryImages(p, colorImages){
-    const general = [p.image_url].concat(Array.isArray(p.gallery_urls) ? p.gallery_urls : []).filter(Boolean);
-    const extra = (Array.isArray(colorImages) ? colorImages : []).filter(Boolean);
-    const seen = new Set();
-    const merged = [];
-    general.concat(extra).forEach(url => {
-      if(!seen.has(url)){ seen.add(url); merged.push(url); }
-    });
-    return merged;
+  /** يجمع صور المنتج العامة (image_url + gallery_urls) — هاي هي الصور
+      يلي بتنعرض بالوضع الافتراضي (قبل اختيار أي لون، أو بعد الرجوع
+      لخيار "الافتراضي" صراحة). */
+  function buildGalleryImages(p){
+    return [p.image_url].concat(Array.isArray(p.gallery_urls) ? p.gallery_urls : []).filter(Boolean);
   }
 
-  /** colors is optional — when present it drives the image set (clicking
-      a swatch swaps the whole gallery, same interaction as the thumbnail
-      gallery itself). When absent, the existing image_url + gallery_urls
-      behavior is untouched — this is additive, not a replacement. */
+  /** colors is optional. idx === -1 يعني "الافتراضي" (رجوع للصور
+      العامة بس). أي idx حقيقي تاني بيعرض صور هالّون فقط (بدون خلط مع
+      الصور العامة) — لو هالّون ماله صور خاصة، بترجع الصورة الرئيسية
+      كحل احتياطي بدل ما يضل المعرض فاضي تمامًا. */
   function selectColorAt(idx){
-    const color = currentProduct.colors[idx];
-    selectedColorName = color.name;
-    currentImages = buildGalleryImages(currentProduct, color.images);
+    if(idx === -1){
+      selectedColorName = null;
+      currentImages = buildGalleryImages(currentProduct);
+    }else{
+      const color = currentProduct.colors[idx];
+      selectedColorName = color.name;
+      const ownImages = Array.isArray(color.images) ? color.images.filter(Boolean) : [];
+      currentImages = ownImages.length ? ownImages : [currentProduct.image_url];
+    }
     currentIndex = 0;
-    document.querySelectorAll('.color-option').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
+    document.querySelectorAll('.color-option').forEach(el => {
+      el.classList.toggle('active', parseInt(el.dataset.index, 10) === idx);
     });
     renderGalleryChrome();
     updateOrderLink();
@@ -293,14 +295,11 @@
   function productTemplate(p, currency, buyPhone){
     const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
 
-    if(hasColors){
-      currentImages = buildGalleryImages(p, p.colors[0].images);
-      selectedColorName = p.colors[0].name;
-    }else{
-      // No colors — fall back to the plain image_url + gallery_urls gallery.
-      currentImages = buildGalleryImages(p, null);
-      selectedColorName = null;
-    }
+    // الحالة الابتدائية دايمًا "الافتراضي": الصور العامة بس (image_url +
+    // gallery_urls)، بغض النظر عن وجود ألوان — اختيار لون بيبدّل المعرض
+    // لصوره الخاصة، والرجوع لـ"الافتراضي" بيرجّع نفس هالصور من جديد.
+    currentImages = buildGalleryImages(p);
+    selectedColorName = null;
     currentIndex = 0;
     selectedSize = null;
 
@@ -308,8 +307,12 @@
       <div class="colors-block">
         <h4>${t('product.colors_available')}</h4>
         <div class="color-options">
+          <button type="button" class="color-option active" data-index="-1" aria-label="${t('product.color_default')}">
+            <span class="swatch-circle swatch-default"></span>
+            <span>${t('product.color_default')}</span>
+          </button>
           ${p.colors.map((c, i) => `
-            <button type="button" class="color-option${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="${c.name}">
+            <button type="button" class="color-option" data-index="${i}" aria-label="${c.name}">
               <span class="swatch-circle" style="background-color:${c.hex || '#8A8A8A'}"></span>
               <span>${c.name}</span>
             </button>
