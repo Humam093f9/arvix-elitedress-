@@ -8,6 +8,28 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* خلفية هذي الصفحة بس (المجموعة) — بدل اللون الغامق الواحد الثابت
+     المشترك بكل الصفحات، توهّج ذهبي خفيف بيتحرك ببطء بالخلفية، عشان
+     يحس الزائر إنه في "روح"/حيوية بالصفحة بدون ما نطلع من الطابع الغامق
+     الفخم للموقع (مش تحويل الخلفية للون فاتح، بس حركة وتدرّج لوني خفيف). */
+  body{
+    background:
+      radial-gradient(circle at 18% 12%, rgba(212,175,55,0.13), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(201,161,90,0.10), transparent 46%),
+      var(--bg-1);
+    background-size:220% 220%, 220% 220%, auto;
+    animation:collection-bg-drift 22s ease-in-out infinite;
+  }
+  @keyframes collection-bg-drift{
+    0%{background-position:0% 0%, 100% 100%, 0 0;}
+    50%{background-position:100% 40%, 0% 30%, 0 0;}
+    100%{background-position:0% 0%, 100% 100%, 0 0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    body{animation:none;}
+  }
+</style>
 </head>
 <body>
 
