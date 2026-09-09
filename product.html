@@ -120,6 +120,10 @@
     border-bottom:1px solid var(--border-gold);
     padding:18px 0;margin:20px 0;
   }
+  /* BUG FIX — هاد الصف ماكان إله أي تنسيق أصلاً (لا flex ولا مسافة بين
+     السعرين)، فكان السعر الأصلي المشطوب والسعر بعد الخصم يطلعوا ملزوقين
+     فوق بعض بلا أي ترتيب واضح. هلق نفس تنسيق كرت المنتج بالضبط. */
+  .product-info .price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
   .product-info .price-current{font-size:22px;}
   .product-info .price-original{font-size:15px;}
   .product-info .price-on-request{font-size:16px;color:var(--gold-2);}
@@ -239,6 +243,22 @@
     setActiveImage(0);
   }
 
+  /** يجمع صور المنتج العامة (image_url + gallery_urls) مع صور اللون
+      المختار (لو موجودة)، ويشيل أي تكرار — قبل هيك كان اختيار أي لون
+      يمسح الصور العامة نهائيًا ويعرض بس صور ذاك اللون تحديدًا، فكانت
+      الصور العامة ما تظهر أبدًا، وتبديل الألوان ما يغيّر أي شي محسوس لو
+      اللون المختار ماله صور خاصة إضافية (البقيت نفس الصورة الوحيدة). */
+  function buildGalleryImages(p, colorImages){
+    const general = [p.image_url].concat(Array.isArray(p.gallery_urls) ? p.gallery_urls : []).filter(Boolean);
+    const extra = (Array.isArray(colorImages) ? colorImages : []).filter(Boolean);
+    const seen = new Set();
+    const merged = [];
+    general.concat(extra).forEach(url => {
+      if(!seen.has(url)){ seen.add(url); merged.push(url); }
+    });
+    return merged;
+  }
+
   /** colors is optional — when present it drives the image set (clicking
       a swatch swaps the whole gallery, same interaction as the thumbnail
       gallery itself). When absent, the existing image_url + gallery_urls
@@ -246,8 +266,7 @@
   function selectColorAt(idx){
     const color = currentProduct.colors[idx];
     selectedColorName = color.name;
-    const images = Array.isArray(color.images) ? color.images.filter(Boolean) : [];
-    currentImages = images.length ? images : [currentProduct.image_url];
+    currentImages = buildGalleryImages(currentProduct, color.images);
     currentIndex = 0;
     document.querySelectorAll('.color-option').forEach((el, i) => {
       el.classList.toggle('active', i === idx);
@@ -275,13 +294,11 @@
     const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
 
     if(hasColors){
-      const firstImages = Array.isArray(p.colors[0].images) ? p.colors[0].images.filter(Boolean) : [];
-      currentImages = firstImages.length ? firstImages : [p.image_url];
+      currentImages = buildGalleryImages(p, p.colors[0].images);
       selectedColorName = p.colors[0].name;
     }else{
       // No colors — fall back to the plain image_url + gallery_urls gallery.
-      const galleryUrls = Array.isArray(p.gallery_urls) ? p.gallery_urls.filter(Boolean) : [];
-      currentImages = [p.image_url].concat(galleryUrls);
+      currentImages = buildGalleryImages(p, null);
       selectedColorName = null;
     }
     currentIndex = 0;

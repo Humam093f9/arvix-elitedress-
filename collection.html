@@ -44,7 +44,14 @@
   <p data-i18n="collection.subtitle">تصفّحي كل فساتيننا في مكان واحد، أو فلتري حسب الفئة.</p>
 </section>
 
-<div class="filters" id="filters" role="tablist" aria-label="فلترة حسب الفئة" hidden></div>
+<div class="filters-bar" id="filters" hidden>
+  <div class="filter-select-wrap">
+    <select class="filter-select" id="categorySelect" aria-label="التصنيف"></select>
+  </div>
+  <div class="filter-select-wrap">
+    <select class="filter-select" id="sortSelect" aria-label="الترتيب"></select>
+  </div>
+</div>
 
 <div class="product-grid" id="productGrid">
   <p class="empty-state" data-i18n="collection.loading">جاري تحميل التشكيلة...</p>
@@ -107,21 +114,54 @@
   (async function init(){
     const settings = await getSettings();
     const grid = document.getElementById('productGrid');
-    const filtersHost = document.getElementById('filters');
+    const filtersBar = document.getElementById('filters');
+    const categorySelect = document.getElementById('categorySelect');
+    const sortSelect = document.getElementById('sortSelect');
     const products = settings.products_v2 || [];
     const categories = settings.categories || [];
 
     let currentFilter = 'all';
+    let currentSort = 'default';
     const params = new URLSearchParams(window.location.search);
     const requestedCat = params.get('cat');
     if(requestedCat && categories.some(c => c.id === requestedCat)){
       currentFilter = requestedCat;
     }
 
+    // السعر الفعلي للمنتج مع أخذ أي خصم فعّال حالياً بعين الاعتبار — نفس
+    // منطق renderPriceHTML، مستخدم هون بس للترتيب حسب السعر. منتج بدون
+    // سعر ("السعر عند الطلب") بيترجّع null وبينحط دايماً بآخر القائمة
+    // بغض النظر عن اتجاه الترتيب (مش منطقي يطلع "الأرخص" أو "الأغلى").
+    function effectivePrice(p){
+      if(p.price === null || p.price === undefined || p.price === '') return null;
+      const discount = getActiveDiscount(p);
+      return discount ? discount.newPrice : p.price;
+    }
+
+    function sortProducts(list){
+      const arr = list.slice();
+      if(currentSort === 'newest') return arr.reverse();
+      if(currentSort === 'deals'){
+        return arr.sort((a, b) => (getActiveDiscount(b) ? 1 : 0) - (getActiveDiscount(a) ? 1 : 0));
+      }
+      if(currentSort === 'price_asc' || currentSort === 'price_desc'){
+        const dir = currentSort === 'price_asc' ? 1 : -1;
+        return arr.sort((a, b) => {
+          const pa = effectivePrice(a), pb = effectivePrice(b);
+          if(pa === null && pb === null) return 0;
+          if(pa === null) return 1;
+          if(pb === null) return -1;
+          return (pa - pb) * dir;
+        });
+      }
+      return arr; // default = نفس الترتيب المضبوط يدوياً بلوحة التحكم
+    }
+
     async function renderGrid(){
-      const filtered = currentFilter === 'all'
+      const byCategory = currentFilter === 'all'
         ? products
         : products.filter(p => p.category_id === currentFilter);
+      const filtered = sortProducts(byCategory);
 
       if(filtered.length === 0){
         grid.innerHTML = `<p class="empty-state">${t('collection.empty_filtered')}</p>`;
@@ -144,35 +184,49 @@
     }
 
     function renderFilters(){
-      // Per Arvix: if there are 0 or 1 categories, hide the filter bar entirely.
-      if(categories.length <= 1){
-        filtersHost.hidden = true;
+      if(products.length === 0){
+        filtersBar.hidden = true;
         return;
       }
-      filtersHost.hidden = false;
-      const tabs = [{ id: 'all', label: t('filters.all') }].concat(categories);
+      filtersBar.hidden = false;
 
-      filtersHost.innerHTML = tabs.map(tab => `
-        <button class="filter-tab${tab.id === currentFilter ? ' active' : ''}" data-cat="${tab.id}" role="tab" aria-selected="${tab.id === currentFilter}">
-          ${localizedField(tab, 'label')}
-        </button>
+      // قائمة التصنيف تنعرض بس لو في أكتر من قسم وحد — نفس قاعدة آرفيكس
+      // الأصلية (ما في داعي لقائمة فلترة بقسم وحيد أو بدون أقسام أصلاً).
+      if(categories.length <= 1){
+        categorySelect.closest('.filter-select-wrap').hidden = true;
+      }else{
+        categorySelect.closest('.filter-select-wrap').hidden = false;
+        const catOptions = [{ id: 'all', label: t('filters.all') }].concat(categories);
+        categorySelect.innerHTML = catOptions.map(c => `
+          <option value="${c.id}"${c.id === currentFilter ? ' selected' : ''}>${localizedField(c, 'label')}</option>
+        `).join('');
+      }
+
+      const sortOptions = [
+        { id: 'default', label: t('filters.sort_default') },
+        { id: 'newest', label: t('filters.sort_newest') },
+        { id: 'deals', label: t('filters.sort_deals') },
+        { id: 'price_asc', label: t('filters.sort_price_asc') },
+        { id: 'price_desc', label: t('filters.sort_price_desc') },
+      ];
+      sortSelect.innerHTML = sortOptions.map(s => `
+        <option value="${s.id}"${s.id === currentSort ? ' selected' : ''}>${s.label}</option>
       `).join('');
-
-      filtersHost.querySelectorAll('.filter-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          currentFilter = btn.dataset.cat;
-          filtersHost.querySelectorAll('.filter-tab').forEach(b => {
-            b.classList.toggle('active', b === btn);
-            b.setAttribute('aria-selected', b === btn);
-          });
-          renderGrid();
-          const url = new URL(window.location);
-          if(currentFilter === 'all'){ url.searchParams.delete('cat'); }
-          else{ url.searchParams.set('cat', currentFilter); }
-          window.history.replaceState({}, '', url);
-        });
-      });
     }
+
+    categorySelect.addEventListener('change', () => {
+      currentFilter = categorySelect.value;
+      renderGrid();
+      const url = new URL(window.location);
+      if(currentFilter === 'all'){ url.searchParams.delete('cat'); }
+      else{ url.searchParams.set('cat', currentFilter); }
+      window.history.replaceState({}, '', url);
+    });
+
+    sortSelect.addEventListener('change', () => {
+      currentSort = sortSelect.value;
+      renderGrid();
+    });
 
     if(products.length === 0){
       grid.innerHTML = `<p class="empty-state">${t('collection.empty_all')}</p>`;

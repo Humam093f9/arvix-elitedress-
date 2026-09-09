@@ -51,6 +51,13 @@ var I18N_DICT = {
     'collection.empty_filtered': 'لا توجد فساتين ضمن هذه الفئة حالياً.',
     'collection.empty_all': 'لا توجد فساتين متاحة حالياً.',
     'filters.all': 'الكل',
+    'filters.category_label': 'التصنيف',
+    'filters.sort_label': 'الترتيب',
+    'filters.sort_default': 'الترتيب الافتراضي',
+    'filters.sort_newest': 'الأحدث أولاً',
+    'filters.sort_deals': 'العروض أولاً',
+    'filters.sort_price_asc': 'السعر: الأقل أولاً',
+    'filters.sort_price_desc': 'السعر: الأعلى أولاً',
 
     // صفحة من نحن
     'about.eyebrow': 'قصتنا',
@@ -179,6 +186,13 @@ var I18N_DICT = {
     'collection.empty_filtered': 'No dresses available in this category right now.',
     'collection.empty_all': 'No dresses available right now.',
     'filters.all': 'All',
+    'filters.category_label': 'Category',
+    'filters.sort_label': 'Sort by',
+    'filters.sort_default': 'Default order',
+    'filters.sort_newest': 'Newest first',
+    'filters.sort_deals': 'Deals first',
+    'filters.sort_price_asc': 'Price: Low to High',
+    'filters.sort_price_desc': 'Price: High to Low',
 
     'about.eyebrow': 'Our Story',
     'about.p1': "ELITEDRESS was born from a deep passion for the details that turn an ordinary dress into a piece whose story is told for years. Every design goes through careful stages of selection and tailoring — from choosing the finest fabrics to the final embroidery stitch — to give every woman a look worthy of moments meant to be remembered.",
