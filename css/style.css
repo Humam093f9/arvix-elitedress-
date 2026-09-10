@@ -5,12 +5,40 @@
 :root{
   --bg-1:#0A0E17;
   --bg-2:#12161F;
+  --panel:#171b26;
   --gold:#C9A15A;
   --gold-2:#D4AF37;
   --cream:#F5F1E8;
   --light-bg:#F3EFE6;
   --border-gold:rgba(201,161,90,0.3);
   --gray-soft:#B9B6AE;
+  --overlay-soft:rgba(255,255,255,0.85);
+  --overlay-faint:rgba(255,255,255,0.5);
+  --scrim:rgba(0,0,0,0.45);
+  --glass-bg:rgba(10,14,23,0.85);
+  --glass-bg-strong:rgba(10,14,23,0.97);
+}
+
+/* ===== الثيم الفاتح ===== */
+/* الافتراضي هو الفاتح (يُضبط بـ theme.js قبل ما تترسم الصفحة، فما في
+   وميض لوني عند التحميل). التبديل بس بإعادة تعريف نفس المتغيرات هون —
+   80% من الموقع مبني عليهم أصلاً فبينقلب تلقائيًا، والباقي (قسم الهيرو
+   وصفحة "فصّلي فستانك" الفخمة بصورها) قررنا يضلّوا بطابعهم الغامق
+   دايمًا بقصد — نفس أسلوب مواقع الأزياء العالمية يلي بتخلي قسم الغلاف
+   دراماتيكي غامق حتى بموقع فاتح. */
+html[data-theme="light"]{
+  --bg-1:#FAF7F1;
+  --bg-2:#FFFFFF;
+  --panel:#FFFFFF;
+  --gold-2:#B8923F;
+  --cream:#241F17;
+  --gray-soft:#6E6656;
+  --border-gold:rgba(184,146,63,0.35);
+  --overlay-soft:rgba(10,14,23,0.75);
+  --overlay-faint:rgba(10,14,23,0.35);
+  --scrim:rgba(255,255,255,0.55);
+  --glass-bg:rgba(255,255,255,0.88);
+  --glass-bg-strong:rgba(255,255,255,0.97);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -51,12 +79,13 @@ header{
   position:sticky;top:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 6vw;
-  background:rgba(10,14,23,0.85);
+  background:var(--glass-bg);
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border-gold);
 }
-.brand{display:flex;align-items:center;gap:12px;}
+.brand{display:flex;align-items:center;gap:12px;transition:opacity .25s ease;}
+.brand:hover{opacity:0.82;}
 .brand-mark{
   width:38px;height:38px;border:1px solid var(--gold);border-radius:50%;
   display:flex;align-items:center;justify-content:center;color:var(--gold-2);
@@ -85,6 +114,13 @@ nav a:hover::after, nav a.active::after{transform:scaleX(1);}
 .icon-btn:hover{background:var(--gold-2);color:var(--bg-1);transform:scale(1.06);}
 .icon-btn svg{pointer-events:none;}
 
+/* زر تبديل الثيم — أيقونة القمر ظاهرة افتراضيًا (يعني: اضغطي للتحويل
+   للوضع الغامق)، وبتنقلب لأيقونة شمس بالوضع الغامق (اضغطي للرجوع
+   للفاتح). */
+.theme-toggle .icon-sun{display:none;}
+html[data-theme="dark"] .theme-toggle .icon-sun{display:block;}
+html[data-theme="dark"] .theme-toggle .icon-moon{display:none;}
+
 /* زر تبديل اللغة — نفس دائرة .icon-btn، بس عنصر <button> فبيحتاج تصفير
    تنسيق المتصفح الافتراضي (خلفية/حدود/خط) قبل ما يورث شكل icon-btn. */
 button.icon-btn.lang-toggle{
@@ -94,18 +130,86 @@ button.icon-btn.lang-toggle{
 }
 button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 
+/* الهمبرغر (القائمة المنسدلة الجانبية) اتلغى نهائيًا — الموبايل هلق
+   بيعرض كل روابط التنقّل مباشرة تحت الهيدر بصف واحد قابل للتمرير، نفس
+   مبدأ الديسكتوب بالضبط (بدون ما تكون مخفية وراء زر). العنصر ضل موجود
+   بالـHTML القديم بس مخفي دايمًا هلق. */
 .nav-toggle{display:none;}
+
 @media (max-width:860px){
+  header{flex-wrap:wrap;row-gap:14px;padding:14px 5vw 12px;}
+
   nav{
-    position:fixed;inset:0 0 0 auto;top:74px;width:78vw;max-width:320px;
-    height:calc(100vh - 74px);background:var(--bg-2);
-    border-left:1px solid var(--border-gold);
-    transform:translateX(100%);transition:transform .4s ease;padding:36px 28px;
+    order:5;width:100%;
+    display:flex;overflow-x:auto;
+    -ms-overflow-style:none;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(to left, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+    mask-image:linear-gradient(to left, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+    position:static;height:auto;width:100%;background:none;border:none;
+    transform:none;transition:none;padding:0;
   }
-  nav.open{transform:translateX(0);}
-  nav ul{flex-direction:column;gap:26px;}
-  .nav-toggle{display:flex;flex-direction:column;gap:5px;width:26px;}
-  .nav-toggle span{height:1px;width:100%;background:var(--gold-2);}
+  nav::-webkit-scrollbar{display:none;}
+  nav ul{flex-direction:row;gap:22px;flex-wrap:nowrap;white-space:nowrap;padding-inline:2px;}
+  nav a{font-size:13px;}
+
+  /* زر واتساب صار زر عائم ثابت أسفل يمين الشاشة (بدل خانة بصف الهيدر)
+     — نفس فكرة أزرار واتساب العائمة بمعظم مواقع التسوق، مع نبضة خفيفة
+     تلفت الانتباه له بلطف. */
+  #headerWhatsapp{
+    position:fixed;bottom:20px;inset-inline-end:18px;z-index:95;
+    width:54px;height:54px;
+    background:#1F9C56;border-color:#1F9C56;color:#fff;
+    box-shadow:0 8px 24px rgba(31,156,86,0.4);
+    animation:whatsapp-pulse 2.6s ease-in-out infinite;
+  }
+  #headerWhatsapp:hover{background:#199048;color:#fff;}
+
+  /* قائمة اللغة (AR/EN) صارت "قائمة" حقيقية بسهم، ثابتة أعلى الشاشة يسار
+     (يسار فعلي دايمًا، مش يمين حتى بالعربي — نفس مواقع الموضة العالمية)،
+     تحت الهيدر مباشرة، بدل دائرة بصف الأيقونات. */
+  button.icon-btn.lang-toggle{
+    position:fixed;top:78px;left:14px;z-index:96;
+    width:auto;height:auto;padding:7px 10px 7px 14px;border-radius:999px;
+    background:var(--glass-bg);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    display:flex;align-items:center;gap:6px;
+  }
+  button.icon-btn.lang-toggle::after{
+    content:"";width:6px;height:6px;flex-shrink:0;
+    border-inline-end:1.5px solid currentColor;border-block-end:1.5px solid currentColor;
+    transform:rotate(45deg);margin-top:-3px;
+  }
+}
+
+@keyframes whatsapp-pulse{
+  0%, 100%{box-shadow:0 8px 24px rgba(31,156,86,0.4);}
+  50%{box-shadow:0 8px 32px rgba(31,156,86,0.7);}
+}
+@media (prefers-reduced-motion: reduce){
+  #headerWhatsapp{animation:none;}
+}
+
+/* ===== Search bar (site-wide, injected by site.js) ===== */
+.search-bar{
+  position:fixed;top:0;inset-inline:0;z-index:99;
+  background:var(--glass-bg-strong);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border-gold);
+  padding:18px 6vw;
+  transform:translateY(-100%);opacity:0;pointer-events:none;
+  transition:transform .35s cubic-bezier(.22,1,.36,1), opacity .3s ease;
+}
+.search-bar.open{transform:translateY(0);opacity:1;pointer-events:auto;}
+.search-bar form{display:flex;align-items:center;gap:12px;max-width:600px;margin:0 auto;}
+.search-bar input{
+  flex:1;background:transparent;border:none;border-bottom:1px solid var(--border-gold);
+  color:var(--cream);font-size:16px;padding:8px 4px;
+}
+.search-bar input:focus{outline:none;border-color:var(--gold-2);}
+.search-bar input::placeholder{color:var(--gray-soft);}
+.search-bar button{color:var(--gold-2);flex-shrink:0;transition:transform .2s ease;}
+.search-bar button:hover{transform:scale(1.12);}
+@media (prefers-reduced-motion: reduce){
+  .search-bar{transition:none;}
 }
 
 /* ===== Generic page header (used by collection/about/contact) ===== */
@@ -163,7 +267,7 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 .card-link{display:block;color:inherit;text-decoration:none;}
 .card{
   position:relative;border-radius:24px 24px 0 0;overflow:hidden;
-  background:#171b26;transition:box-shadow 0.3s ease;
+  background:var(--panel);transition:background .3s ease, box-shadow 0.3s ease;
 }
 .card-img{
   position:relative;aspect-ratio:4/5;overflow:hidden;
@@ -172,6 +276,28 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 .card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease;}
 .card:hover .card-img img{transform:scale(1.03);}
 .card:hover{box-shadow:0 16px 38px rgba(201,161,90,0.28);}
+
+/* معرض صور مصغّر جوا الكرت — صف أفقي قابل للسحب (scroll-snap)، كل صورة
+   تاخد عرض الكرت كامل. */
+.card-carousel{
+  position:absolute;inset:0;display:flex;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  -ms-overflow-style:none;scrollbar-width:none;
+}
+.card-carousel::-webkit-scrollbar{display:none;}
+.card-carousel img{flex-shrink:0;width:100%;height:100%;scroll-snap-align:start;}
+.card-progress{
+  position:absolute;top:10px;inset-inline:10px;z-index:5;
+  display:flex;gap:4px;
+}
+.card-progress span{
+  flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,0.35);overflow:hidden;
+}
+.card-progress span::after{
+  content:"";display:block;width:0;height:100%;background:var(--gold-2);
+  transition:width .25s ease;
+}
+.card-progress span.active::after{width:100%;}
 
 /* Fabric badges — overlay ON TOP of the product image itself (bottom-right
    corner, overlapping the photo — not below/outside it). Each badge is a
@@ -308,6 +434,34 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 .corner-br{bottom:10px;left:10px;border-bottom-width:1.5px;border-left-width:1.5px;}
 .card:hover .corner{opacity:1;}
 
+/* قلب "المفضّلة" — فوق صورة الكرت (زاوية علوية)، وبشكل مختلف بصفحة
+   تفاصيل المنتج (جنب العنوان، مش عائم فوق صورة). */
+.fav-heart{
+  position:absolute;top:12px;inset-inline-end:12px;z-index:5;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(10,14,23,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  transition:transform .25s ease, color .25s ease;
+}
+.fav-heart:hover{transform:scale(1.12);}
+.fav-heart:active{transform:scale(0.88);}
+.fav-heart.active{color:#e0546b;}
+.fav-heart.active svg{fill:#e0546b;}
+
+.product-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.fav-heart-detail{
+  position:static;background:none;backdrop-filter:none;color:var(--gray-soft);
+  width:auto;height:auto;flex-shrink:0;
+}
+.fav-heart-detail:hover{transform:scale(1.14);color:#e0546b;}
+.fav-heart-detail.active{color:#e0546b;}
+.fav-heart-detail.active svg{fill:#e0546b;}
+
+/* عناصر المفضّلة جوا الدرج (drawer) مبنية من نفس قوالب السلة بس بروابط
+   بدل أزرار كمية — رابط عرض المنتج تحت السعر. */
+.wishlist-view-link{font-size:12px;color:var(--gold-2);transition:opacity .2s ease;}
+.wishlist-view-link:hover{opacity:0.75;}
+
 /* UNIFORM CARD SIZE — قبل هيك، ارتفاع .card-body كان بيتغيّر حسب محتواه:
    منتج فيه خصم (سطرين: سعر + عداد تنازلي) كان أطول من منتج بدون خصم (سطر
    وحيد)، ومنتج اسمه طويل كان يوخد سطرين بينما اسم قصير ياخد سطر. النتيجة:
@@ -378,6 +532,104 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 .whatsapp-cta:hover{transform:scale(1.02);box-shadow:0 14px 32px rgba(31,156,86,0.35);}
 .whatsapp-cta svg{flex-shrink:0;pointer-events:none;}
 
+/* زر "أضيفي للسلة" — إجراء ثانوي جنب زر واتساب (الأساسي)، نفس شكل
+   الحدود الذهبية المستخدم بباقي الموقع بدل تكرار نفس الأخضر. */
+.add-cart-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  margin-top:12px;padding:15px 20px;border-radius:999px;
+  background:transparent;border:1.5px solid var(--gold-2);color:var(--gold-2);
+  font-weight:600;font-size:15px;
+  transition:background .3s ease, transform .3s ease, color .3s ease;
+}
+.add-cart-btn:hover{background:rgba(212,175,55,0.1);transform:scale(1.02);}
+.add-cart-btn:active{transform:scale(0.97);}
+.add-cart-btn.is-added{background:var(--gold-2);color:var(--bg-1);}
+
+/* ===== Cart drawer ===== */
+.cart-badge{
+  position:absolute;top:-4px;inset-inline-end:-4px;
+  min-width:16px;height:16px;padding:0 3px;border-radius:999px;
+  background:var(--gold-2);color:var(--bg-1);
+  font-size:10px;font-weight:700;line-height:16px;text-align:center;
+  box-shadow:0 0 0 2px var(--bg-1);
+  transition:transform .25s ease;
+}
+#cartToggle{position:relative;}
+#cartToggle:active .cart-badge{transform:scale(1.3);}
+
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  opacity:0;visibility:hidden;transition:opacity .3s ease, visibility .3s ease;
+  z-index:90;
+}
+.cart-overlay.open{opacity:1;visibility:visible;}
+
+.cart-drawer{
+  position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(380px, 92vw);
+  background:var(--bg-2);border-inline-start:1px solid var(--border-gold);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+  z-index:91;box-shadow:-10px 0 40px rgba(0,0,0,0.4);
+}
+html[dir="rtl"] .cart-drawer{transform:translateX(-100%);}
+.cart-drawer.open{transform:translateX(0);}
+
+.cart-drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px;border-bottom:1px solid var(--border-gold);
+}
+.cart-drawer-head h3{font-family:'Amiri', serif;font-size:20px;color:var(--cream);}
+.cart-drawer-head button{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gray-soft);transition:color .2s ease, background .2s ease, transform .2s ease;
+}
+.cart-drawer-head button:hover{color:var(--gold-2);background:rgba(212,175,55,0.1);transform:rotate(90deg);}
+
+.cart-drawer-body{flex:1;overflow-y:auto;padding:6px 20px;}
+.cart-empty{color:var(--gray-soft);text-align:center;padding:50px 0;}
+
+.cart-item{
+  display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-gold);
+  position:relative;animation:cart-item-in .3s ease;
+}
+@keyframes cart-item-in{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.cart-item-img{width:56px;height:70px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#0A0E17;display:block;}
+.cart-item-img img{width:100%;height:100%;object-fit:cover;}
+.cart-item-info{flex:1;min-width:0;}
+.cart-item-info h4{font-size:14px;color:var(--cream);margin-bottom:2px;}
+.cart-item-meta{font-size:11.5px;color:var(--gray-soft);margin-bottom:4px;}
+.cart-item-price{font-size:13px;color:var(--gold-2);font-weight:600;margin-bottom:6px;}
+.cart-item-qty{display:flex;align-items:center;gap:10px;}
+.qty-btn{
+  width:22px;height:22px;border-radius:50%;border:1px solid var(--border-gold);
+  color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:border-color .2s ease, background .2s ease, transform .15s ease;
+}
+.qty-btn:hover{border-color:var(--gold);background:rgba(212,175,55,0.08);}
+.qty-btn:active{transform:scale(0.85);}
+.cart-item-qty span{font-size:13px;color:var(--cream);min-width:16px;text-align:center;}
+.cart-item-remove{
+  position:absolute;top:14px;inset-inline-end:0;color:var(--gray-soft);
+  transition:color .2s ease, transform .2s ease;
+}
+.cart-item-remove:hover{color:#d96a6a;transform:scale(1.15);}
+
+.cart-drawer-footer{padding:16px 20px 22px;border-top:1px solid var(--border-gold);}
+.cart-total{font-size:15px;color:var(--cream);margin-bottom:14px;text-align:center;}
+.cart-total strong{color:var(--gold-2);}
+.cart-total span{font-size:12px;color:var(--gray-soft);}
+.cart-clear-btn{
+  display:block;width:100%;text-align:center;margin-top:10px;font-size:12.5px;color:var(--gray-soft);
+  transition:color .2s ease;
+}
+.cart-clear-btn:hover{color:#d96a6a;}
+
+@media (prefers-reduced-motion: reduce){
+  .cart-drawer, .cart-overlay, .cart-item, .cart-drawer-head button{transition:none;animation:none;}
+}
+
 /* ===== Countdown ===== */
 .discount-countdown{
   display:inline-flex;align-items:center;gap:6px;
@@ -411,6 +663,12 @@ footer .footer-brand{letter-spacing:.2em;color:var(--gold-2);margin-bottom:14px;
 .footer-row a{transition:color .2s ease;}
 .footer-row a:hover{color:var(--gold-2);}
 .footer-icon{display:flex;color:var(--gold-2);flex-shrink:0;}
+
+@media (max-width:560px){
+  footer{font-size:14.5px;padding:40px 6vw;}
+  .footer-contact{font-size:15px;gap:12px;}
+  .footer-row{font-size:15px;}
+}
 
 /* ===== Social icon row (contact page) ===== */
 .social-grid{

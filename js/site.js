@@ -108,9 +108,80 @@ function withSiteParam(path){
   }catch(e){ return path; }
 }
 
+/** على الموبايل، زر واتساب وقائمة اللغة بيصيروا عناصر ثابتة على الشاشة
+    (position:fixed) — زر واتساب أسفل يمين، واللغة أعلى يسار، خارج
+    الهيدر تمامًا. لازم ننقلهم فعليًا يصيروا أولاد مباشرين لـ<body>،
+    لأنه الهيدر نفسه فيه backdrop-filter، وهاي خاصية معروفة بالمتصفحات:
+    أي عنصر position:fixed جوا سلف عنده filter/backdrop-filter بيتموضع
+    بالنسبة لهداك السلف مش لكامل الشاشة. على الديسكتوب منرجعهم بالضبط
+    لمكانهم الأصلي جوا الهيدر — الشكل هناك يضل زي ما هو تمامًا. */
+function relocateHeaderFixedItems(){
+  var whatsapp = document.getElementById('headerWhatsapp');
+  var langToggle = document.querySelector('.lang-toggle');
+  if(!whatsapp && !langToggle) return;
+
+  var whatsappHome = whatsapp ? whatsapp.parentNode : null;
+  var whatsappNext = whatsapp ? whatsapp.nextSibling : null;
+  var langHome = langToggle ? langToggle.parentNode : null;
+  var langNext = langToggle ? langToggle.nextSibling : null;
+
+  function apply(){
+    var isMobile = window.matchMedia('(max-width:860px)').matches;
+    if(isMobile){
+      if(whatsapp && whatsapp.parentNode !== document.body) document.body.appendChild(whatsapp);
+      if(langToggle && langToggle.parentNode !== document.body) document.body.appendChild(langToggle);
+    }else{
+      if(whatsapp && whatsappHome && whatsapp.parentNode !== whatsappHome){
+        whatsappHome.insertBefore(whatsapp, whatsappNext);
+      }
+      if(langToggle && langHome && langToggle.parentNode !== langHome){
+        langHome.insertBefore(langToggle, langNext);
+      }
+    }
+  }
+  apply();
+  window.addEventListener('resize', apply);
+}
+
+/** صندوق بحث علوي بسيط، متاح من أي صفحة (زر 🔍 بالهيدر) — بيبعت
+    الكلمة لصفحة المجموعة وهي يلي بتعمل الفلترة الفعلية بأسماء المنتجات
+    (عربي وإنجليزي معًا). العنصر بيتحقن مرة وحدة بالـ<body> ومشترك بكل
+    الصفحات، نفس مبدأ درج السلة/المفضّلة. */
+function injectSearchBar(){
+  if(document.getElementById('searchBar')) return;
+  const wrap = document.createElement('div');
+  wrap.innerHTML =
+    '<div id="searchBar" class="search-bar">' +
+      '<form id="searchForm">' +
+        '<input type="search" id="searchInput" placeholder="' + t('search.placeholder') + '" autocomplete="off">' +
+        '<button type="submit" aria-label="' + t('search.aria_submit') + '">' +
+          '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+        '</button>' +
+      '</form>' +
+    '</div>';
+  document.body.appendChild(wrap);
+
+  document.getElementById('searchForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var q = document.getElementById('searchInput').value.trim();
+    if(!q) return;
+    window.location.href = withSiteParam('collection.html?search=' + encodeURIComponent(q));
+  });
+
+  document.querySelectorAll('#searchToggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var bar = document.getElementById('searchBar');
+      bar.classList.toggle('open');
+      if(bar.classList.contains('open')) document.getElementById('searchInput').focus();
+    });
+  });
+}
+
 function initNav(){
   var navToggle = document.getElementById('navToggle');
   var mainNav = document.getElementById('mainNav');
+  relocateHeaderFixedItems();
+  injectSearchBar();
   if(!navToggle || !mainNav) return;
   navToggle.addEventListener('click', function(){
     var isOpen = mainNav.classList.toggle('open');

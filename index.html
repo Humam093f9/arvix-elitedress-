@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{var t=localStorage.getItem('elitedress_theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <title data-i18n="home.page_title">ELITEDRESS — أناقة لا تُنسى</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,6 +206,11 @@
       background-image:image-set(url('img/hero-silk-chandelier-mobile.webp') 1x, url('img/hero-silk-chandelier-mobile.jpg') 1x);
       background-size:cover;
       background-position:top center;
+      /* الهيرو كان min-height:100vh زي الديسكتوب، وهاد كان يسيب فراغ
+         غامق فاضي كبير تحت المحتوى (خصوصًا بالشاشات الطويلة) قبل ما توصلي
+         لقسم المزايا. تصغير للموبايل بس — الديسكتوب ضل زي ما هو تمامًا. */
+      min-height:86vh;
+      padding:100px 6vw 50px;
     }
   }
 
@@ -653,6 +659,9 @@
     background:var(--gold-2);
     color:#20242C;
   }
+  @media (max-width:560px){
+    .outline-btn{font-size:16.5px;padding:17px 42px;}
+  }
 
   /* mobile nav */
   @media (max-width:860px){
@@ -692,9 +701,9 @@
     <span></span><span></span><span></span>
   </button>
 
-  <div class="brand">
+  <a href="index.html" class="brand" aria-label="ELITEDRESS — الصفحة الرئيسية">
     <span class="brand-name latin">ELITEDRESS</span>
-  </div>
+  </a>
 
   <nav id="mainNav">
     <ul>
@@ -705,6 +714,39 @@
       <li><a href="custom-order.html" data-i18n="nav.custom">فصّلي فستانك</a></li>
     </ul>
   </nav>
+
+  <button type="button" class="icon-btn theme-toggle" id="themeToggle" aria-label="تبديل الوضع الفاتح/الغامق">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="4.5"/>
+      <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>
+    </svg>
+  </button>
+
+  <button type="button" class="icon-btn" id="searchToggle" data-i18n-aria="nav.search_aria" aria-label="بحث">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.3-4.3"/>
+    </svg>
+  </button>
+
+  <button type="button" class="icon-btn" id="wishlistToggle" data-i18n-aria="nav.wishlist_aria" aria-label="المفضّلة">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M12 20.5s-7.5-4.6-10-9.3C.5 8 2 4.8 5.2 4.1c2-.4 3.9.5 5 2.1 1.1-1.6 3-2.5 5-2.1C18.4 4.8 19.9 8 18 11.2c-2.5 4.7-10 9.3-10 9.3z"/>
+    </svg>
+    <span class="cart-badge" id="wishlistBadge" hidden>0</span>
+  </button>
+
+  <button type="button" class="icon-btn" id="cartToggle" data-i18n-aria="nav.cart_aria" aria-label="سلة المشتريات">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L20 8H6"/>
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="17" cy="20" r="1"/>
+    </svg>
+    <span class="cart-badge" id="cartBadge" hidden>0</span>
+  </button>
 
   <a href="#" class="whatsapp-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -789,7 +831,6 @@
         </div>
       <div class="card-body">
         <h3 data-i18n="cat.evening">فساتين السهرة</h3>
-        <p data-i18n="home.cat_evening_tag">لمسة من الفخامة</p>
       </div>
     </article></a>
 
@@ -803,7 +844,6 @@
         </div>
       <div class="card-body">
         <h3 data-i18n="cat.wedding">فساتين الأعراس</h3>
-        <p data-i18n="home.cat_wedding_tag">لحظتك الأجمل</p>
       </div>
     </article></a>
 
@@ -817,7 +857,6 @@
         </div>
       <div class="card-body">
         <h3 data-i18n="cat.engagement">فساتين الخطوبة</h3>
-        <p data-i18n="home.cat_engagement_tag">بدايات ساحرة</p>
       </div>
     </article></a>
 
@@ -831,7 +870,6 @@
         </div>
       <div class="card-body">
         <h3 data-i18n="cat.royal">فساتين ملكية</h3>
-        <p data-i18n="home.cat_royal_tag">فخامة بلا حدود</p>
       </div>
     </article></a>
   </div>
@@ -849,9 +887,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/favorites.js"></script>
+<script src="js/theme.js"></script>
 <script>
   (async function initArvixWiring(){
     const settings = await getSettings();
+    setCartContext(settings.currency, settings.buy_phone);
     const waHeader = document.getElementById('headerWhatsapp');
     if(waHeader) waHeader.href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
 
@@ -868,6 +910,8 @@
   // Mobile nav toggle
   const navToggle = document.getElementById('navToggle');
   const mainNav = document.getElementById('mainNav');
+  relocateHeaderFixedItems();
+  injectSearchBar();
   navToggle.addEventListener('click', () => {
     const isOpen = mainNav.classList.toggle('open');
     navToggle.setAttribute('aria-expanded', isOpen);

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{var t=localStorage.getItem('elitedress_theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <title id="pageTitle" data-i18n="product.page_title">تفاصيل الفستان — ELITEDRESS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +19,7 @@
   .product-image{
     position:relative;
     aspect-ratio:4/5;border-radius:18px;overflow:hidden;
-    background:#171b26;border:1px solid var(--border-gold);
+    background:var(--panel);border:1px solid var(--border-gold);
   }
   .product-image img{width:100%;height:100%;object-fit:cover;transition:opacity .2s ease;}
 
@@ -52,6 +53,10 @@
   .sizes-block h4{
     font-size:13px;color:var(--gold-2);margin-bottom:10px;letter-spacing:0.03em;
   }
+  .sizes-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .sizes-head h4{margin-bottom:0;}
+  .size-guide-link{font-size:12px;color:var(--gray-soft);text-decoration:underline;transition:color .2s ease;}
+  .size-guide-link:hover{color:var(--gold-2);}
   .sizes-list{display:flex;flex-wrap:wrap;gap:10px;}
   .size-chip{
     min-width:44px;padding:8px 14px;text-align:center;
@@ -59,11 +64,29 @@
     font-size:14px;color:var(--cream);cursor:pointer;
     transition:border-color .2s ease, background .2s ease, color .2s ease;
   }
+  .size-chip small{display:block;font-size:9.5px;opacity:0.7;margin-top:2px;}
   .size-chip:hover{border-color:var(--gold);}
   .size-chip.active{
     background:linear-gradient(135deg, var(--gold-2), var(--gold));
     color:var(--bg-1);border-color:transparent;font-weight:600;
   }
+
+  /* دليل المقاسات — نافذة صغيرة بنص الشاشة (مش درج جانبي متل السلة). */
+  .size-guide-modal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.94);
+    width:min(360px, 90vw);max-height:80vh;overflow:hidden;
+    background:var(--bg-2);border:1px solid var(--border-gold);border-radius:16px;
+    z-index:91;opacity:0;visibility:hidden;
+    transition:opacity .3s ease, transform .3s ease, visibility .3s ease;
+    display:flex;flex-direction:column;
+  }
+  .size-guide-modal.open{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);}
+  .size-guide-body{overflow-y:auto;padding:8px 20px 20px;}
+  .size-guide-body table{width:100%;border-collapse:collapse;font-size:13px;}
+  .size-guide-body th, .size-guide-body td{
+    padding:8px 6px;text-align:center;border-bottom:1px solid var(--border-gold);color:var(--cream);
+  }
+  .size-guide-body th{color:var(--gold-2);font-weight:600;font-size:11.5px;}
 
   .colors-block{margin:18px 0;}
   .colors-block h4{
@@ -141,9 +164,9 @@
     <span></span><span></span><span></span>
   </button>
 
-  <div class="brand">
+  <a href="index.html" class="brand" aria-label="ELITEDRESS — الصفحة الرئيسية">
     <span class="brand-name latin">ELITEDRESS</span>
-  </div>
+  </a>
 
   <nav id="mainNav">
     <ul>
@@ -154,6 +177,39 @@
       <li><a href="custom-order.html" data-i18n="nav.custom">فصّلي فستانك</a></li>
     </ul>
   </nav>
+
+  <button type="button" class="icon-btn theme-toggle" id="themeToggle" aria-label="تبديل الوضع الفاتح/الغامق">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="4.5"/>
+      <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>
+    </svg>
+  </button>
+
+  <button type="button" class="icon-btn" id="searchToggle" data-i18n-aria="nav.search_aria" aria-label="بحث">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.3-4.3"/>
+    </svg>
+  </button>
+
+  <button type="button" class="icon-btn" id="wishlistToggle" data-i18n-aria="nav.wishlist_aria" aria-label="المفضّلة">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M12 20.5s-7.5-4.6-10-9.3C.5 8 2 4.8 5.2 4.1c2-.4 3.9.5 5 2.1 1.1-1.6 3-2.5 5-2.1C18.4 4.8 19.9 8 18 11.2c-2.5 4.7-10 9.3-10 9.3z"/>
+    </svg>
+    <span class="cart-badge" id="wishlistBadge" hidden>0</span>
+  </button>
+
+  <button type="button" class="icon-btn" id="cartToggle" data-i18n-aria="nav.cart_aria" aria-label="سلة المشتريات">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L20 8H6"/>
+      <circle cx="9" cy="20" r="1"/>
+      <circle cx="17" cy="20" r="1"/>
+    </svg>
+    <span class="cart-badge" id="cartBadge" hidden>0</span>
+  </button>
 
   <a href="#" class="icon-btn" id="headerWhatsapp" data-i18n-aria="nav.whatsapp_aria" aria-label="تواصل عبر واتساب" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -181,6 +237,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/favorites.js"></script>
+<script src="js/theme.js"></script>
 <script>
   initNav();
 
@@ -292,6 +351,39 @@
     link.href = buildWhatsAppLink(currentBuyPhone, message);
   }
 
+  /** بتضيف نسخة عن المنتج الحالي (بلونه/مقاسه المختارين حاليًا) للسلة.
+      لو المنتج بدون سعر ("السعر عند الطلب")، بتنحفظ بـ price:null وبتترك
+      عرض السعر والحساب الإجمالي بالسلة يتعاملوا معها متل باقي الموقع. */
+  function addCurrentProductToCart(){
+    const discount = getActiveDiscount(currentProduct);
+    const noPrice = currentProduct.price === null || currentProduct.price === undefined || currentProduct.price === '';
+    const price = noPrice ? null : (discount ? discount.newPrice : currentProduct.price);
+
+    const fabrics = Array.isArray(currentProduct.fabrics) ? currentProduct.fabrics.filter(f => f && f.name) : [];
+    const fabricsText = fabrics.length ? fabrics.map(f => localizedField(f, 'name')).join(t('list.separator')) : '';
+
+    addToCart({
+      productId: currentProduct.id,
+      name: localizedField(currentProduct, 'name'),
+      price: price,
+      colorName: selectedColorName,
+      fabricsText: fabricsText,
+      size: selectedSize,
+      image: currentProduct.image_url
+    });
+
+    const btn = document.getElementById('addToCartBtn');
+    if(btn){
+      const original = btn.textContent;
+      btn.textContent = t('product.added_to_cart');
+      btn.classList.add('is-added');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('is-added');
+      }, 1400);
+    }
+  }
+
   function productTemplate(p, currency, buyPhone){
     const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
 
@@ -333,12 +425,21 @@
         </div>
       </div>` : '';
 
-    // sizes is optional — if empty/missing, hide the whole block.
+    // sizes is optional — if empty/missing, hide the whole block. لو أي
+    // مقاس منها رقم أوروبي/سوري معروف بالجدول، منضيف تحته مباشرة الحرف
+    // المقابل (S/M/L...) كتذكير سريع بدون ما تفتحي دليل المقاسات كامل.
     const sizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
+    const hasKnownEuSize = sizes.some(s => getSizeConversion(s));
     const sizesHtml = sizes.length ? `
       <div class="sizes-block">
-        <h4>${t('product.sizes_available')}</h4>
-        <div class="sizes-list">${sizes.map(s => `<span class="size-chip" data-size="${s}">${s}</span>`).join('')}</div>
+        <div class="sizes-head">
+          <h4>${t('product.sizes_available')}</h4>
+          ${hasKnownEuSize ? `<button type="button" id="sizeGuideBtn" class="size-guide-link">${t('product.size_guide')}</button>` : ''}
+        </div>
+        <div class="sizes-list">${sizes.map(s => {
+          const conv = getSizeConversion(s);
+          return `<span class="size-chip" data-size="${s}">${s}${conv ? `<small>${conv.letter}</small>` : ''}</span>`;
+        }).join('')}</div>
       </div>` : '';
 
     return `
@@ -352,7 +453,14 @@
         </div>
 
         <div class="product-info">
-          <h1>${localizedField(p, 'name')}</h1>
+          <div class="product-title-row">
+            <h1>${localizedField(p, 'name')}</h1>
+            <button type="button" class="fav-heart fav-heart-detail" data-product-id="${p.id}" data-name="${localizedField(p, 'name')}" data-image="${p.image_url}" data-price="${p.price === null || p.price === undefined ? '' : p.price}" aria-label="${t('nav.wishlist_aria')}">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 20.3s-7.2-4.4-9.6-8.9C.8 7.9 2.3 4.9 5.3 4.2c1.9-.4 3.7.5 4.7 2 1-1.5 2.8-2.4 4.7-2 3 .7 4.5 3.7 2.9 7.2-2.4 4.5-9.6 8.9-9.6 8.9z"/>
+              </svg>
+            </button>
+          </div>
           <p class="description selectable">${localizedField(p, 'full_desc') || localizedField(p, 'blurb')}</p>
 
           <div class="price-block">${renderPriceHTML(p, currency)}</div>
@@ -367,6 +475,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3.5 20.5l1.4-4.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             <span>${t('product.order_whatsapp')}</span>
           </a>
+          <button type="button" id="addToCartBtn" class="add-cart-btn">${t('product.add_to_cart')}</button>
         </div>
       </div>`;
   }
@@ -376,6 +485,7 @@
     const id = params.get('id');
     const root = document.getElementById('productRoot');
     const settings = await getSettings();
+    setCartContext(settings.currency, settings.buy_phone);
 
     const waLinkHeader = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
     document.getElementById('headerWhatsapp').href = waLinkHeader;
@@ -434,6 +544,71 @@
       document.querySelectorAll('.size-chip').forEach(chip => {
         chip.addEventListener('click', () => selectSize(chip.dataset.size));
       });
+      const addCartBtn = document.getElementById('addToCartBtn');
+      if(addCartBtn) addCartBtn.addEventListener('click', addCurrentProductToCart);
+
+      const favBtn = document.querySelector('.fav-heart-detail');
+      if(favBtn){
+        favBtn.addEventListener('click', () => {
+          toggleFavorite({
+            productId: favBtn.dataset.productId,
+            name: favBtn.dataset.name,
+            image: favBtn.dataset.image,
+            price: favBtn.dataset.price === '' ? null : Number(favBtn.dataset.price)
+          });
+        });
+      }
+      const sizeGuideBtn = document.getElementById('sizeGuideBtn');
+      if(sizeGuideBtn) sizeGuideBtn.addEventListener('click', openSizeGuideModal);
+      paintFavoriteHearts();
+    }
+
+    /** جدول تحويل المقاسات (SIZE_CONVERSION_TABLE بملف data.js) بنافذة
+        بسيطة — بيتحقن مرة وحدة بس بالصفحة، ونفس النافذة تتفتح كل مرة. */
+    function openSizeGuideModal(){
+      let modal = document.getElementById('sizeGuideModal');
+      if(!modal){
+        const wrap = document.createElement('div');
+        wrap.innerHTML = `
+          <div id="sizeGuideOverlay" class="cart-overlay"></div>
+          <div id="sizeGuideModal" class="size-guide-modal" role="dialog" aria-label="${t('product.size_guide')}">
+            <div class="cart-drawer-head">
+              <h3>${t('product.size_guide')}</h3>
+              <button type="button" id="sizeGuideCloseBtn" aria-label="${t('cart.close_aria')}">✕</button>
+            </div>
+            <div class="size-guide-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>${t('product.size_guide_syria')}</th>
+                    <th>US</th>
+                    <th>UK</th>
+                    <th>IT</th>
+                    <th>${t('product.size_guide_letter')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${SIZE_CONVERSION_TABLE.map(row => `
+                    <tr><td>${row.eu}</td><td>${row.us}</td><td>${row.uk}</td><td>${row.it}</td><td>${row.letter}</td></tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>`;
+        document.body.appendChild(wrap);
+        modal = document.getElementById('sizeGuideModal');
+        document.getElementById('sizeGuideCloseBtn').addEventListener('click', closeSizeGuideModal);
+        document.getElementById('sizeGuideOverlay').addEventListener('click', closeSizeGuideModal);
+      }
+      document.getElementById('sizeGuideOverlay').classList.add('open');
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSizeGuideModal(){
+      document.getElementById('sizeGuideOverlay').classList.remove('open');
+      document.getElementById('sizeGuideModal').classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     renderProduct();
