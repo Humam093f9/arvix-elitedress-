@@ -105,16 +105,28 @@
 
 <div class="filters-bar" id="filters" hidden>
   <div class="filter-select-wrap">
-    <select class="filter-select" id="categorySelect" aria-label="التصنيف"></select>
+    <button type="button" class="filter-select" id="categorySelect" aria-haspopup="listbox" aria-expanded="false" aria-label="التصنيف">
+      <span class="filter-select-value"></span>
+    </button>
+    <ul class="filter-select-menu" id="categorySelectMenu" role="listbox" hidden></ul>
   </div>
   <div class="filter-select-wrap">
-    <select class="filter-select" id="colorSelect" aria-label="اللون"></select>
+    <button type="button" class="filter-select" id="colorSelect" aria-haspopup="listbox" aria-expanded="false" aria-label="اللون">
+      <span class="filter-select-value"></span>
+    </button>
+    <ul class="filter-select-menu" id="colorSelectMenu" role="listbox" hidden></ul>
   </div>
   <div class="filter-select-wrap">
-    <select class="filter-select" id="sizeSelect" aria-label="المقاس"></select>
+    <button type="button" class="filter-select" id="sizeSelect" aria-haspopup="listbox" aria-expanded="false" aria-label="المقاس">
+      <span class="filter-select-value"></span>
+    </button>
+    <ul class="filter-select-menu" id="sizeSelectMenu" role="listbox" hidden></ul>
   </div>
   <div class="filter-select-wrap">
-    <select class="filter-select" id="sortSelect" aria-label="الترتيب"></select>
+    <button type="button" class="filter-select" id="sortSelect" aria-haspopup="listbox" aria-expanded="false" aria-label="الترتيب">
+      <span class="filter-select-value"></span>
+    </button>
+    <ul class="filter-select-menu" id="sortSelectMenu" role="listbox" hidden></ul>
   </div>
 </div>
 
@@ -232,6 +244,45 @@
     paintFavoriteHearts();
   }
 
+  /** قائمة منسدلة مبنية بالكامل بكودنا (زر + <ul>) بدل <select> الأصلي —
+      لأنه المتصفح على الموبايل بيرسم قائمة خيارات <select> بشكل نظام
+      التشغيل الافتراضي (أبيض/أزرق) بدون ما يحترم أي تلوين CSS منّا، حتى
+      لو الزر نفسه مصمم بألوان الموقع. options: [{value,label}]. */
+  function closeAllCustomSelects(){
+    document.querySelectorAll('.filter-select-menu').forEach(m => { m.hidden = true; });
+    document.querySelectorAll('.filter-select[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  }
+
+  function populateCustomSelect(btn, menu, options, currentValue){
+    const current = options.find(o => o.value === currentValue) || options[0];
+    btn.querySelector('.filter-select-value').textContent = current ? current.label : '';
+    menu.innerHTML = options.map(o => `
+      <li role="option" data-value="${o.value}" class="${o.value === currentValue ? 'active' : ''}">${o.label}</li>
+    `).join('');
+  }
+
+  function setupCustomSelect(btn, menu, onSelect){
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = menu.hidden;
+      closeAllCustomSelects();
+      if(willOpen){
+        menu.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+    menu.addEventListener('click', (e) => {
+      const li = e.target.closest('li');
+      if(!li) return;
+      closeAllCustomSelects();
+      onSelect(li.dataset.value);
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.filter-select-wrap')) closeAllCustomSelects();
+  });
+
   (async function init(){
     const settings = await getSettings();
     setCartContext(settings.currency, settings.buy_phone);
@@ -241,6 +292,10 @@
     const colorSelect = document.getElementById('colorSelect');
     const sizeSelect = document.getElementById('sizeSelect');
     const sortSelect = document.getElementById('sortSelect');
+    const categorySelectMenu = document.getElementById('categorySelectMenu');
+    const colorSelectMenu = document.getElementById('colorSelectMenu');
+    const sizeSelectMenu = document.getElementById('sizeSelectMenu');
+    const sortSelectMenu = document.getElementById('sortSelectMenu');
     const products = settings.products_v2 || [];
     const categories = settings.categories || [];
     // كل الألوان والمقاسات المتاحة عبر كل المنتجات — لبناء قوائم فلترة
@@ -343,10 +398,9 @@
         categorySelect.closest('.filter-select-wrap').hidden = true;
       }else{
         categorySelect.closest('.filter-select-wrap').hidden = false;
-        const catOptions = [{ id: 'all', label: t('filters.all') }].concat(categories);
-        categorySelect.innerHTML = catOptions.map(c => `
-          <option value="${c.id}"${c.id === currentFilter ? ' selected' : ''}>${localizedField(c, 'label')}</option>
-        `).join('');
+        const catOptions = [{ value: 'all', label: t('filters.all') }]
+          .concat(categories.map(c => ({ value: c.id, label: localizedField(c, 'label') })));
+        populateCustomSelect(categorySelect, categorySelectMenu, catOptions, currentFilter);
       }
 
       // قائمة الألوان والمقاسات كمان بتختفي لحالها لو مافي أي منتج عنده
@@ -355,34 +409,33 @@
         colorSelect.closest('.filter-select-wrap').hidden = true;
       }else{
         colorSelect.closest('.filter-select-wrap').hidden = false;
-        colorSelect.innerHTML = [`<option value="all"${currentColor === 'all' ? ' selected' : ''}>${t('filters.color_label')}</option>`]
-          .concat(allColors.map(c => `<option value="${c}"${c === currentColor ? ' selected' : ''}>${c}</option>`))
-          .join('');
+        const colorOptions = [{ value: 'all', label: t('filters.color_label') }]
+          .concat(allColors.map(c => ({ value: c, label: c })));
+        populateCustomSelect(colorSelect, colorSelectMenu, colorOptions, currentColor);
       }
 
       if(allSizes.length === 0){
         sizeSelect.closest('.filter-select-wrap').hidden = true;
       }else{
         sizeSelect.closest('.filter-select-wrap').hidden = false;
-        sizeSelect.innerHTML = [`<option value="all"${currentSize === 'all' ? ' selected' : ''}>${t('filters.size_label')}</option>`]
-          .concat(allSizes.map(s => `<option value="${s}"${s === currentSize ? ' selected' : ''}>${s.toUpperCase()}</option>`))
-          .join('');
+        const sizeOptions = [{ value: 'all', label: t('filters.size_label') }]
+          .concat(allSizes.map(s => ({ value: s, label: s.toUpperCase() })));
+        populateCustomSelect(sizeSelect, sizeSelectMenu, sizeOptions, currentSize);
       }
 
       const sortOptions = [
-        { id: 'default', label: t('filters.sort_default') },
-        { id: 'newest', label: t('filters.sort_newest') },
-        { id: 'deals', label: t('filters.sort_deals') },
-        { id: 'price_asc', label: t('filters.sort_price_asc') },
-        { id: 'price_desc', label: t('filters.sort_price_desc') },
+        { value: 'default', label: t('filters.sort_default') },
+        { value: 'newest', label: t('filters.sort_newest') },
+        { value: 'deals', label: t('filters.sort_deals') },
+        { value: 'price_asc', label: t('filters.sort_price_asc') },
+        { value: 'price_desc', label: t('filters.sort_price_desc') },
       ];
-      sortSelect.innerHTML = sortOptions.map(s => `
-        <option value="${s.id}"${s.id === currentSort ? ' selected' : ''}>${s.label}</option>
-      `).join('');
+      populateCustomSelect(sortSelect, sortSelectMenu, sortOptions, currentSort);
     }
 
-    categorySelect.addEventListener('change', () => {
-      currentFilter = categorySelect.value;
+    setupCustomSelect(categorySelect, categorySelectMenu, (value) => {
+      currentFilter = value;
+      populateCustomSelect(categorySelect, categorySelectMenu, [{ value: 'all', label: t('filters.all') }].concat(categories.map(c => ({ value: c.id, label: localizedField(c, 'label') }))), currentFilter);
       renderGrid();
       const url = new URL(window.location);
       if(currentFilter === 'all'){ url.searchParams.delete('cat'); }
@@ -390,18 +443,27 @@
       window.history.replaceState({}, '', url);
     });
 
-    colorSelect.addEventListener('change', () => {
-      currentColor = colorSelect.value;
+    setupCustomSelect(colorSelect, colorSelectMenu, (value) => {
+      currentColor = value;
+      populateCustomSelect(colorSelect, colorSelectMenu, [{ value: 'all', label: t('filters.color_label') }].concat(allColors.map(c => ({ value: c, label: c }))), currentColor);
       renderGrid();
     });
 
-    sizeSelect.addEventListener('change', () => {
-      currentSize = sizeSelect.value;
+    setupCustomSelect(sizeSelect, sizeSelectMenu, (value) => {
+      currentSize = value;
+      populateCustomSelect(sizeSelect, sizeSelectMenu, [{ value: 'all', label: t('filters.size_label') }].concat(allSizes.map(s => ({ value: s, label: s.toUpperCase() }))), currentSize);
       renderGrid();
     });
 
-    sortSelect.addEventListener('change', () => {
-      currentSort = sortSelect.value;
+    setupCustomSelect(sortSelect, sortSelectMenu, (value) => {
+      currentSort = value;
+      populateCustomSelect(sortSelect, sortSelectMenu, [
+        { value: 'default', label: t('filters.sort_default') },
+        { value: 'newest', label: t('filters.sort_newest') },
+        { value: 'deals', label: t('filters.sort_deals') },
+        { value: 'price_asc', label: t('filters.sort_price_asc') },
+        { value: 'price_desc', label: t('filters.sort_price_desc') },
+      ], currentSort);
       renderGrid();
     });
 
