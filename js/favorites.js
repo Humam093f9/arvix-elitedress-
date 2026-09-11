@@ -44,7 +44,7 @@ function toggleFavorite(item){
 
 function removeFavorite(productId){
   saveFavorites(getFavorites().filter(f => f.productId !== productId));
-  renderFavoritesDrawer();
+  renderFavoritesPage();
 }
 
 function renderFavoritesBadge(){
@@ -80,7 +80,7 @@ function favoriteRowTemplate(item){
     </div>`;
 }
 
-function renderFavoritesDrawer(){
+function renderFavoritesPage(){
   const body = document.getElementById('wishlistDrawerBody');
   if(!body) return;
   const items = getFavorites();
@@ -94,44 +94,10 @@ function renderFavoritesDrawer(){
   });
 }
 
-function openFavoritesDrawer(){
-  renderFavoritesDrawer();
-  document.getElementById('wishlistOverlay').classList.add('open');
-  document.getElementById('wishlistDrawer').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeFavoritesDrawer(){
-  document.getElementById('wishlistOverlay').classList.remove('open');
-  document.getElementById('wishlistDrawer').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function injectFavoritesDrawerMarkup(){
-  if(document.getElementById('wishlistDrawer')) return;
-  const wrap = document.createElement('div');
-  wrap.innerHTML = `
-    <div id="wishlistOverlay" class="cart-overlay"></div>
-    <aside id="wishlistDrawer" class="cart-drawer" role="dialog" aria-label="${t('wishlist.title')}">
-      <div class="cart-drawer-head">
-        <h3>${t('wishlist.title')}</h3>
-        <button type="button" id="wishlistCloseBtn" aria-label="${t('cart.close_aria')}">✕</button>
-      </div>
-      <div id="wishlistDrawerBody" class="cart-drawer-body"></div>
-    </aside>`;
-  document.body.appendChild(wrap);
-
-  document.getElementById('wishlistCloseBtn').addEventListener('click', closeFavoritesDrawer);
-  document.getElementById('wishlistOverlay').addEventListener('click', closeFavoritesDrawer);
-}
-
 function initFavoritesUI(){
-  injectFavoritesDrawerMarkup();
   renderFavoritesBadge();
   paintFavoriteHearts();
-  document.querySelectorAll('#wishlistToggle').forEach(btn => {
-    btn.addEventListener('click', openFavoritesDrawer);
-  });
 }
 
 document.addEventListener('DOMContentLoaded', initFavoritesUI);
+document.addEventListener('langchange', renderFavoritesPage);

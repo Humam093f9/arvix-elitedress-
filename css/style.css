@@ -17,6 +17,7 @@
   --scrim:rgba(0,0,0,0.45);
   --glass-bg:rgba(10,14,23,0.85);
   --glass-bg-strong:rgba(10,14,23,0.97);
+  --glass-panel:rgba(18,22,31,0.6);
 }
 
 /* ===== الثيم الفاتح ===== */
@@ -39,6 +40,7 @@ html[data-theme="light"]{
   --scrim:rgba(255,255,255,0.55);
   --glass-bg:rgba(255,255,255,0.88);
   --glass-bg-strong:rgba(255,255,255,0.97);
+  --glass-panel:rgba(255,255,255,0.7);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -113,6 +115,8 @@ nav a:hover::after, nav a.active::after{transform:scaleX(1);}
 }
 .icon-btn:hover{background:var(--gold-2);color:var(--bg-1);transform:scale(1.06);}
 .icon-btn svg{pointer-events:none;}
+.whatsapp-fab-label{display:none;}
+.header-icons{display:flex;align-items:center;gap:8px;}
 
 /* زر تبديل الثيم — أيقونة القمر ظاهرة افتراضيًا (يعني: اضغطي للتحويل
    للوضع الغامق)، وبتنقلب لأيقونة شمس بالوضع الغامق (اضغطي للرجوع
@@ -137,7 +141,13 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 .nav-toggle{display:none;}
 
 @media (max-width:860px){
-  header{flex-wrap:wrap;row-gap:14px;padding:14px 5vw 12px;}
+  header{flex-wrap:wrap;row-gap:14px;padding:14px 4vw 12px;gap:8px;}
+
+  /* الشعار مصغّر شوي على الموبايل بس (نفس اقتراحك) — عشان يعطي مساحة
+     أوسع لصف الأيقونات بدون ما تصير ملزوقة ببعض. الديسكتوب ما تأثر. */
+  .brand-name{font-size:16px;letter-spacing:0.22em;}
+  .icon-btn{width:36px;height:36px;}
+  .header-icons{gap:6px;}
 
   nav{
     order:5;width:100%;
@@ -152,17 +162,20 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
   nav ul{flex-direction:row;gap:22px;flex-wrap:nowrap;white-space:nowrap;padding-inline:2px;}
   nav a{font-size:13px;}
 
-  /* زر واتساب صار زر عائم ثابت أسفل يمين الشاشة (بدل خانة بصف الهيدر)
-     — نفس فكرة أزرار واتساب العائمة بمعظم مواقع التسوق، مع نبضة خفيفة
-     تلفت الانتباه له بلطف. */
+  /* زر واتساب صار زر عائم ثابت أسفل يمين الشاشة (بدل خانة بصف الهيدر)،
+     بشكل مستطيل بنص "تواصل معنا" وأيقونة واتساب كاملة — بدل دائرة
+     أيقونة بس، أوضح وأسهل تعرف عليه. */
   #headerWhatsapp{
     position:fixed;bottom:20px;inset-inline-end:18px;z-index:95;
-    width:54px;height:54px;
+    width:auto;height:auto;padding:13px 22px;border-radius:999px;
     background:#1F9C56;border-color:#1F9C56;color:#fff;
+    display:flex;align-items:center;gap:9px;
+    font-size:14.5px;font-weight:600;white-space:nowrap;
     box-shadow:0 8px 24px rgba(31,156,86,0.4);
     animation:whatsapp-pulse 2.6s ease-in-out infinite;
   }
   #headerWhatsapp:hover{background:#199048;color:#fff;}
+  .whatsapp-fab-label{display:inline;}
 
   /* قائمة اللغة (AR/EN) صارت "قائمة" حقيقية بسهم، ثابتة أعلى الشاشة يسار
      (يسار فعلي دايمًا، مش يمين حتى بالعربي — نفس مواقع الموضة العالمية)،
@@ -628,6 +641,20 @@ html[dir="rtl"] .cart-drawer{transform:translateX(-100%);}
 
 @media (prefers-reduced-motion: reduce){
   .cart-drawer, .cart-overlay, .cart-item, .cart-drawer-head button{transition:none;animation:none;}
+}
+
+/* ===== سلة المشتريات والمفضّلة كصفحات كاملة (cart.html / wishlist.html)
+   ===== */
+/* بدل درج جانبي عائم، هلق إلهم صفحتهم الخاصة بنفس هيكل باقي صفحات
+   الموقع (هيدر + عنوان قسم + محتوى + فوتر) — نفس عناصر وقوالب الدرج
+   (.cart-item, .qty-btn...) بينعاد استخدامهم هون بس داخل حاوية الصفحة. */
+.cart-page-wrap{
+  max-width:640px;margin:0 auto;padding:10px 6vw 100px;
+  min-height:40vh;
+}
+.cart-page-body .cart-item{padding:18px 0;}
+.cart-page-footer{
+  border-top:1px solid var(--border-gold);padding-top:20px;margin-top:10px;
 }
 
 /* ===== Countdown ===== */

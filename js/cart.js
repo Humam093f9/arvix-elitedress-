@@ -4,9 +4,10 @@
    بدل ما الزبونة تبعت رسالة منفصلة لكل منتج. التخزين محلي (localStorage)
    بالمتصفح — نفس مبدأ الموقع كله (بدون حساب مستخدم أو باك-إند طلبات).
    محمّل بكل الصفحات، بعد site.js مباشرة (محتاج t/formatMoney/localizedField
-   /buildWhatsAppLink منه). بيبني واجهة الدرج (الـdrawer) لحاله بالجافاسكربت
-   — مش لازم تكرار الـHTML يدويًا بكل صفحة، بس المطلوب بكل صفحة هو زر
-   السلة نفسه بالهيدر (#cartToggle) وتضمين هذا الملف. */
+   /buildWhatsAppLink منه). السلة هلق صفحة كاملة (cart.html) بنفس هيكل
+   باقي صفحات الموقع — مش درج جانبي عائم — فهذا الملف بس بيرسم محتواها
+   لما تكون عناصرها موجودة بالصفحة (#cartDrawerBody/#cartDrawerFooter)،
+   وبيحدّث عداد السلة الصغير بالهيدر بكل صفحة. */
 
 const CART_STORAGE_KEY = 'elitedress_cart_v1';
 let _cartCurrency = '';
@@ -56,7 +57,7 @@ function removeFromCart(index){
   const items = getCart();
   items.splice(index, 1);
   saveCart(items);
-  renderCartDrawer();
+  renderCartPage();
 }
 
 function updateCartQty(index, delta){
@@ -67,12 +68,12 @@ function updateCartQty(index, delta){
     items.splice(index, 1);
   }
   saveCart(items);
-  renderCartDrawer();
+  renderCartPage();
 }
 
 function clearCart(){
   saveCart([]);
-  renderCartDrawer();
+  renderCartPage();
 }
 
 function renderCartBadge(){
@@ -134,7 +135,9 @@ function cartItemRowTemplate(item, index){
     </div>`;
 }
 
-function renderCartDrawer(){
+/** بترسم محتوى صفحة السلة (cart.html) — ما بتعمل شي على أي صفحة تانية
+    (العناصر مش موجودة فيهم أصلاً). */
+function renderCartPage(){
   const body = document.getElementById('cartDrawerBody');
   const footer = document.getElementById('cartDrawerFooter');
   if(!body) return;
@@ -181,51 +184,18 @@ function renderCartDrawer(){
   });
 }
 
-function openCartDrawer(){
-  renderCartDrawer();
-  document.getElementById('cartOverlay').classList.add('open');
-  document.getElementById('cartDrawer').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeCartDrawer(){
-  document.getElementById('cartOverlay').classList.remove('open');
-  document.getElementById('cartDrawer').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
 /** كل صفحة، بعد ما تجيب getSettings()، بتنادي هالدالة مرة وحدة عشان
     السلة تعرف العملة ورقم واتساب التاجر (مش معروفين قبل هيك). */
 function setCartContext(currency, buyPhone){
   _cartCurrency = currency;
   _cartBuyPhone = buyPhone;
-}
-
-function injectCartDrawerMarkup(){
-  if(document.getElementById('cartDrawer')) return;
-  const wrap = document.createElement('div');
-  wrap.innerHTML = `
-    <div id="cartOverlay" class="cart-overlay"></div>
-    <aside id="cartDrawer" class="cart-drawer" role="dialog" aria-label="${t('cart.title')}">
-      <div class="cart-drawer-head">
-        <h3>${t('cart.title')}</h3>
-        <button type="button" id="cartCloseBtn" aria-label="${t('cart.close_aria')}">✕</button>
-      </div>
-      <div id="cartDrawerBody" class="cart-drawer-body"></div>
-      <div id="cartDrawerFooter" class="cart-drawer-footer"></div>
-    </aside>`;
-  document.body.appendChild(wrap);
-
-  document.getElementById('cartCloseBtn').addEventListener('click', closeCartDrawer);
-  document.getElementById('cartOverlay').addEventListener('click', closeCartDrawer);
+  renderCartPage();
+  if(typeof renderFavoritesPage === 'function') renderFavoritesPage();
 }
 
 function initCartUI(){
-  injectCartDrawerMarkup();
   renderCartBadge();
-  document.querySelectorAll('#cartToggle').forEach(btn => {
-    btn.addEventListener('click', openCartDrawer);
-  });
 }
 
 document.addEventListener('DOMContentLoaded', initCartUI);
+document.addEventListener('langchange', renderCartPage);
