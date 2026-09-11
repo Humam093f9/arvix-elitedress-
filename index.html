@@ -358,7 +358,7 @@
     font-weight:700;
     font-size:clamp(48px, 8vw, 88px);
     line-height:1.15;
-    color:var(--cream);
+    color:#F5F1E8;
     margin-bottom:20px;
   }
 
@@ -390,7 +390,7 @@
   }
 
   .hero p{
-    color:var(--gray-soft);
+    color:#B9B6AE;
     font-size:17px;
     line-height:2;
     margin-bottom:38px;
@@ -611,7 +611,7 @@
   .corner-br{bottom:10px;left:10px;border-bottom-width:1.5px;border-left-width:1.5px;}
   .card:hover .corner{opacity:1;}
 
-  .card-body{
+  .cat-card-body{
     padding:10px 10px 8px;
   }
 
@@ -619,19 +619,19 @@
      الفوتوغرافية جواه)، بغض النظر عن ثيم الموقع العام. كان يستخدم
      var(--cream) يلي بينعكس بالثيم الفاتح لنص غامق تقريبًا أسود، فكان
      العنوان يختفي فوق خلفية الكرت الغامقة الثابتة. */
-  .card-body h3{
+  .cat-card-body h3{
     font-family:'Amiri', serif;
     font-size:18px;
     color:#F5F1E8;
     margin-bottom:4px;
   }
 
-  .card-body p{
+  .cat-card-body p{
     font-size:11.5px;
     color:var(--gray-soft);
   }
 
-  .card-body::after{
+  .cat-card-body::after{
     content:"";
     display:block;
     width:28px;
@@ -668,33 +668,6 @@
     .outline-btn{font-size:16.5px;padding:17px 42px;}
   }
 
-  /* mobile nav */
-  @media (max-width:860px){
-    nav{
-      position:fixed;
-      inset:0 0 0 auto;
-      top:74px;
-      width:78vw;
-      max-width:320px;
-      height:calc(100vh - 74px);
-      background:var(--bg-2);
-      border-left:1px solid var(--border-gold);
-      transform:translateX(100%);
-      transition:transform .4s ease;
-      padding:36px 28px;
-    }
-    nav.open{transform:translateX(0);}
-    nav ul{flex-direction:column;gap:26px;}
-    .nav-toggle{
-      display:flex;
-      flex-direction:column;
-      gap:5px;
-      width:26px;
-    }
-    .nav-toggle span{
-      height:1px;width:100%;background:var(--gold-2);
-    }
-  }
 </style>
 </head>
 <body>
@@ -837,7 +810,7 @@
         </picture>
           <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
         </div>
-      <div class="card-body">
+      <div class="cat-card-body">
         <h3 data-i18n="cat.evening">فساتين السهرة</h3>
       </div>
     </article></a>
@@ -850,7 +823,7 @@
         </picture>
           <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
         </div>
-      <div class="card-body">
+      <div class="cat-card-body">
         <h3 data-i18n="cat.wedding">فساتين الأعراس</h3>
       </div>
     </article></a>
@@ -863,7 +836,7 @@
         </picture>
           <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
         </div>
-      <div class="card-body">
+      <div class="cat-card-body">
         <h3 data-i18n="cat.engagement">فساتين الخطوبة</h3>
       </div>
     </article></a>
@@ -876,7 +849,7 @@
         </picture>
           <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
         </div>
-      <div class="card-body">
+      <div class="cat-card-body">
         <h3 data-i18n="cat.royal">فساتين ملكية</h3>
       </div>
     </article></a>
