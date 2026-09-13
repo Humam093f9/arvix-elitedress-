@@ -171,6 +171,14 @@ function injectSearchBar(){
   document.querySelectorAll('#searchToggle').forEach(function(btn){
     btn.addEventListener('click', function(){
       var bar = document.getElementById('searchBar');
+      var willOpen = !bar.classList.contains('open');
+      if(willOpen){
+        // بنحسب ارتفاع الهيدر الفعلي وقت الفتح (بيختلف حسب عدد صفوفه)
+        // بدل رقم ثابت، عشان الحقل يطلع فورًا تحت الهيدر مباشرة، مش
+        // يغطّي جزء منه.
+        var header = document.querySelector('header');
+        bar.style.top = (header ? header.getBoundingClientRect().bottom : 0) + 'px';
+      }
       bar.classList.toggle('open');
       if(bar.classList.contains('open')) document.getElementById('searchInput').focus();
     });

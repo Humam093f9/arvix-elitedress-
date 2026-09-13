@@ -144,10 +144,13 @@ button.icon-btn.lang-toggle:hover{background:var(--gold-2);color:var(--bg-1);}
 @media (max-width:860px){
   header{flex-wrap:wrap;row-gap:14px;padding:14px 4vw 12px;gap:8px;}
 
-  /* الشعار مصغّر شوي بس عالموبايل (نفس اقتراحك الأول)، بس رجّعته أكبر
-     شوي هلق لأنه صار صغير أكتر من اللازم — توازن بين وضوح الشعار
-     ومساحة كافية لصف الأيقونات. الديسكتوب ما تأثر. */
-  .brand-name{font-size:18px;letter-spacing:0.18em;}
+  /* بإضافة صورة اللوغو، صار "ELITEDRESS" النصي + اللوغو + الأيقونات
+     الأربعة أعرض من عرض شاشة الموبايل بصف واحد، فكان الصف بينكسر لثلاث
+     صفوف بدل صفّين (شكل غير منتظم). الحل: نخبّي الاسم النصي عالموبايل
+     ونخلي صورة اللوغو تمثّل العلامة التجارية لحالها (كافية ومعروفة)،
+     فيضل الشعار + صف الأيقونات على نفس الصف. الديسكتوب ما تأثر أبدًا. */
+  .brand-name{display:none;}
+  .brand-logo{width:38px;height:38px;}
   .icon-btn{width:36px;height:36px;}
   .header-icons{gap:10px;}
 
