@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16.png">
-<link rel="apple-touch-icon" href="img/logo-128.png">
+<link rel="apple-touch-icon" href="img/apple-touch.png">
 <link rel="stylesheet" href="css/style.css">
 <style>
   .product-wrap{
@@ -58,8 +58,7 @@
   }
   .sizes-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .sizes-head h4{margin-bottom:0;}
-  .size-guide-link{font-size:12px;color:var(--gray-soft);text-decoration:underline;transition:color .2s ease;}
-  .size-guide-link:hover{color:var(--gold-2);}
+  .size-region-wrap{flex:0 0 92px;min-width:92px;}
   .sizes-list{display:flex;flex-wrap:wrap;gap:10px;}
   .size-chip{
     min-width:44px;padding:8px 14px;text-align:center;
@@ -67,29 +66,11 @@
     font-size:14px;color:var(--cream);cursor:pointer;
     transition:border-color .2s ease, background .2s ease, color .2s ease;
   }
-  .size-chip small{display:block;font-size:9.5px;opacity:0.7;margin-top:2px;}
   .size-chip:hover{border-color:var(--gold);}
   .size-chip.active{
     background:linear-gradient(135deg, var(--gold-2), var(--gold));
     color:var(--bg-1);border-color:transparent;font-weight:600;
   }
-
-  /* دليل المقاسات — نافذة صغيرة بنص الشاشة (مش درج جانبي متل السلة). */
-  .size-guide-modal{
-    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.94);
-    width:min(360px, 90vw);max-height:80vh;overflow:hidden;
-    background:var(--bg-2);border:1px solid var(--border-gold);border-radius:16px;
-    z-index:91;opacity:0;visibility:hidden;
-    transition:opacity .3s ease, transform .3s ease, visibility .3s ease;
-    display:flex;flex-direction:column;
-  }
-  .size-guide-modal.open{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);}
-  .size-guide-body{overflow-y:auto;padding:8px 20px 20px;}
-  .size-guide-body table{width:100%;border-collapse:collapse;font-size:13px;}
-  .size-guide-body th, .size-guide-body td{
-    padding:8px 6px;text-align:center;border-bottom:1px solid var(--border-gold);color:var(--cream);
-  }
-  .size-guide-body th{color:var(--gold-2);font-weight:600;font-size:11.5px;}
 
   .colors-block{margin:18px 0;}
   .colors-block h4{
@@ -168,7 +149,7 @@
   </button>
 
   <a href="index.html" class="brand" aria-label="ELITEDRESS — الصفحة الرئيسية">
-    <img src="img/logo-40.png" alt="" class="brand-logo" width="34" height="34">
+    <img src="img/logo-header.png" alt="" class="brand-logo" width="34" height="34">
     <span class="brand-name latin">ELITEDRESS</span>
   </a>
 
@@ -255,6 +236,7 @@
   let selectedColorName = null;
   let selectedSize = null;
   let currentProduct = null;
+  let currentSizeRegion = 'ar';
   let currentCurrency = null;
   let currentBuyPhone = null;
 
@@ -341,6 +323,25 @@
     });
     renderGalleryChrome();
     updateOrderLink();
+  }
+
+  /** بترسم كروت المقاسات حسب نظام العرض المختار حاليًا (AR الافتراضي،
+      أو US/UK/IT). المقاس المخزّن الأصلي (بالنظام الأوروبي/السوري) هو
+      يلي بينبعت فعليًا برسالة الطلب دايمًا — التبديل هون بس لعرض الرقم
+      المألوف للزبونة، مش تغيير بالبيانات المحفوظة. مقاس قديم بحرف (مثل
+      M/XL) ما إله تحويل معروف، فبيضل يظهر متل ما هو بأي نظام مختار. */
+  function renderSizeChips(){
+    const host = document.getElementById('sizesList');
+    if(!host || !currentProduct) return;
+    const sizes = Array.isArray(currentProduct.sizes) ? currentProduct.sizes.filter(Boolean) : [];
+    host.innerHTML = sizes.map(s => {
+      const conv = getSizeConversion(s);
+      const display = (conv && currentSizeRegion !== 'ar') ? conv[currentSizeRegion] : s;
+      return `<span class="size-chip${s === selectedSize ? ' active' : ''}" data-size="${s}">${display}</span>`;
+    }).join('');
+    host.querySelectorAll('.size-chip').forEach(chip => {
+      chip.addEventListener('click', () => selectSize(chip.dataset.size));
+    });
   }
 
   function selectSize(value){
@@ -433,20 +434,24 @@
       </div>` : '';
 
     // sizes is optional — if empty/missing, hide the whole block. لو أي
-    // مقاس منها رقم أوروبي/سوري معروف بالجدول، منضيف تحته مباشرة الحرف
-    // المقابل (S/M/L...) كتذكير سريع بدون ما تفتحي دليل المقاسات كامل.
+    // مقاس منها رقم أوروبي/سوري معروف بالجدول، بيمكن تبديل نظام العرض
+    // (AR/US/UK/IT) من قائمة صغيرة جنب العنوان، فتتبدّل أرقام المقاسات
+    // نفسها مباشرة، بدل جدول مرجعي منفصل.
     const sizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
     const hasKnownEuSize = sizes.some(s => getSizeConversion(s));
     const sizesHtml = sizes.length ? `
       <div class="sizes-block">
         <div class="sizes-head">
           <h4>${t('product.sizes_available')}</h4>
-          ${hasKnownEuSize ? `<button type="button" id="sizeGuideBtn" class="size-guide-link">${t('product.size_guide')}</button>` : ''}
+          ${hasKnownEuSize ? `
+            <div class="filter-select-wrap size-region-wrap">
+              <button type="button" class="filter-select" id="sizeRegionSelect" aria-haspopup="listbox" aria-expanded="false" aria-label="${t('product.size_region_label')}">
+                <span class="filter-select-value">AR</span>
+              </button>
+              <ul class="filter-select-menu" id="sizeRegionMenu" role="listbox" hidden></ul>
+            </div>` : ''}
         </div>
-        <div class="sizes-list">${sizes.map(s => {
-          const conv = getSizeConversion(s);
-          return `<span class="size-chip" data-size="${s}">${s}${conv ? `<small>${conv.letter}</small>` : ''}</span>`;
-        }).join('')}</div>
+        <div class="sizes-list" id="sizesList"></div>
       </div>` : '';
 
     return `
@@ -539,17 +544,12 @@
       }
       if(keepSize){
         selectedSize = keepSize;
-        document.querySelectorAll('.size-chip').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.size === selectedSize);
-        });
       }
+      renderSizeChips();
       updateOrderLink();
 
       document.querySelectorAll('.color-option').forEach(el => {
         el.addEventListener('click', () => selectColorAt(parseInt(el.dataset.index, 10)));
-      });
-      document.querySelectorAll('.size-chip').forEach(chip => {
-        chip.addEventListener('click', () => selectSize(chip.dataset.size));
       });
       const addCartBtn = document.getElementById('addToCartBtn');
       if(addCartBtn) addCartBtn.addEventListener('click', addCurrentProductToCart);
@@ -565,58 +565,51 @@
           });
         });
       }
-      const sizeGuideBtn = document.getElementById('sizeGuideBtn');
-      if(sizeGuideBtn) sizeGuideBtn.addEventListener('click', openSizeGuideModal);
+
+      // قائمة "AR/US/UK/IT" لتبديل نظام عرض أرقام المقاسات — نفس فكرة
+      // القوائم المخصّصة بصفحة المجموعة (زر + <ul>)، بدل <select> الأصلي
+      // يلي المتصفح عالموبايل بيرسم قائمة خياراته بشكله الافتراضي بدون
+      // احترام تلوين الموقع.
+      const sizeRegionSelect = document.getElementById('sizeRegionSelect');
+      const sizeRegionMenu = document.getElementById('sizeRegionMenu');
+      if(sizeRegionSelect && sizeRegionMenu){
+        const regionOptions = [
+          { value: 'ar', label: 'AR' },
+          { value: 'us', label: 'US' },
+          { value: 'uk', label: 'UK' },
+          { value: 'it', label: 'IT' },
+        ];
+        const paintRegionSelect = () => {
+          sizeRegionSelect.querySelector('.filter-select-value').textContent = regionOptions.find(o => o.value === currentSizeRegion).label;
+          sizeRegionMenu.innerHTML = regionOptions.map(o => `
+            <li role="option" data-value="${o.value}" class="${o.value === currentSizeRegion ? 'active' : ''}">${o.label}</li>
+          `).join('');
+        };
+        paintRegionSelect();
+        sizeRegionSelect.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const willOpen = sizeRegionMenu.hidden;
+          document.querySelectorAll('.filter-select-menu').forEach(m => { m.hidden = true; });
+          if(willOpen) sizeRegionMenu.hidden = false;
+        });
+        sizeRegionMenu.addEventListener('click', (e) => {
+          const li = e.target.closest('li');
+          if(!li) return;
+          currentSizeRegion = li.dataset.value;
+          sizeRegionMenu.hidden = true;
+          paintRegionSelect();
+          renderSizeChips();
+        });
+      }
+
       paintFavoriteHearts();
     }
 
-    /** جدول تحويل المقاسات (SIZE_CONVERSION_TABLE بملف data.js) بنافذة
-        بسيطة — بيتحقن مرة وحدة بس بالصفحة، ونفس النافذة تتفتح كل مرة. */
-    function openSizeGuideModal(){
-      let modal = document.getElementById('sizeGuideModal');
-      if(!modal){
-        const wrap = document.createElement('div');
-        wrap.innerHTML = `
-          <div id="sizeGuideOverlay" class="cart-overlay"></div>
-          <div id="sizeGuideModal" class="size-guide-modal" role="dialog" aria-label="${t('product.size_guide')}">
-            <div class="cart-drawer-head">
-              <h3>${t('product.size_guide')}</h3>
-              <button type="button" id="sizeGuideCloseBtn" aria-label="${t('cart.close_aria')}">✕</button>
-            </div>
-            <div class="size-guide-body">
-              <table>
-                <thead>
-                  <tr>
-                    <th>${t('product.size_guide_syria')}</th>
-                    <th>US</th>
-                    <th>UK</th>
-                    <th>IT</th>
-                    <th>${t('product.size_guide_letter')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${SIZE_CONVERSION_TABLE.map(row => `
-                    <tr><td>${row.eu}</td><td>${row.us}</td><td>${row.uk}</td><td>${row.it}</td><td>${row.letter}</td></tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>`;
-        document.body.appendChild(wrap);
-        modal = document.getElementById('sizeGuideModal');
-        document.getElementById('sizeGuideCloseBtn').addEventListener('click', closeSizeGuideModal);
-        document.getElementById('sizeGuideOverlay').addEventListener('click', closeSizeGuideModal);
+    document.addEventListener('click', (e) => {
+      if(!e.target.closest('.filter-select-wrap')){
+        document.querySelectorAll('.filter-select-menu').forEach(m => { m.hidden = true; });
       }
-      document.getElementById('sizeGuideOverlay').classList.add('open');
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeSizeGuideModal(){
-      document.getElementById('sizeGuideOverlay').classList.remove('open');
-      document.getElementById('sizeGuideModal').classList.remove('open');
-      document.body.style.overflow = '';
-    }
+    });
 
     renderProduct();
 
