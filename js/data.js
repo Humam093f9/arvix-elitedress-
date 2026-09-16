@@ -256,7 +256,9 @@ var SIZE_CONVERSION_TABLE = [
   { eu: '50', us: '16', uk: '20', it: '54', letter: 'XL'  },
   { eu: '52', us: '18', uk: '22', it: '56', letter: 'XL'  },
   { eu: '54', us: '20', uk: '24', it: '58', letter: 'XXL' },
-  { eu: '56', us: '22', uk: '26', it: '60', letter: 'XXL' }
+  { eu: '56', us: '22', uk: '26', it: '60', letter: 'XXL' },
+  { eu: '58', us: '24', uk: '28', it: '62', letter: 'XXXL' },
+  { eu: '60', us: '26', uk: '30', it: '64', letter: 'XXXL' }
 ];
 
 /** بترجع صف الجدول المطابق للمقاس السوري/الأوروبي المخزّن، أو null لو
