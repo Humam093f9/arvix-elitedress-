@@ -756,3 +756,20 @@ img.img-fallback{
     transform:translateY(0);
   }
 }
+
+/* سحب يمين/شمال للتنقل بين صفحات القائمة (js/swipe-nav.js) — حركة
+   خروج خفيفة بنفس اتجاه إصبع المستخدم الفعلي، قبل ما ننتقل فعليًا
+   للصفحة التالية/السابقة. محصورة بـprefers-reduced-motion زي باقي
+   حركات الموقع. */
+@media (prefers-reduced-motion:no-preference){
+  body.swipe-nav-leave-left,
+  body.swipe-nav-leave-right{
+    animation-duration:.16s;
+    animation-timing-function:ease;
+    animation-fill-mode:forwards;
+  }
+  body.swipe-nav-leave-left{ animation-name:swipeNavOutLeft; }
+  body.swipe-nav-leave-right{ animation-name:swipeNavOutRight; }
+  @keyframes swipeNavOutLeft{ to{ opacity:0; transform:translateX(-22px); } }
+  @keyframes swipeNavOutRight{ to{ opacity:0; transform:translateX(22px); } }
+}
