@@ -110,7 +110,7 @@
 
   (async function init(){
     const settings = await getSettings();
-    setCartContext(settings.currency, settings.buy_phone);
+    setCartContext(settings.currency, settings.buy_phone, settings.__isPlaceholder);
 
     document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry_collection'));
     document.addEventListener('langchange', function(){

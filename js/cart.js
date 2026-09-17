@@ -12,6 +12,7 @@
 const CART_STORAGE_KEY = 'elitedress_cart_v1';
 let _cartCurrency = '';
 let _cartBuyPhone = '';
+let _cartIsPlaceholder = false;
 
 function getCart(){
   try{
@@ -170,7 +171,17 @@ function renderCartPage(){
     </a>
     <button type="button" id="cartClearBtn" class="cart-clear-btn">${t('cart.clear')}</button>`;
 
-  document.getElementById('cartCheckoutBtn').href = buildWhatsAppLink(_cartBuyPhone, buildCartWhatsAppMessage());
+  const checkoutBtn = document.getElementById('cartCheckoutBtn');
+  checkoutBtn.href = buildWhatsAppLink(_cartBuyPhone, buildCartWhatsAppMessage());
+  // SAFETY — لو الإعدادات لسا تجريبية وقت الضغط (رابط ناقص ?s=، الموقع
+  // موقوف مؤقتًا، أو انقطاع شبكة عابر)، منمنع فتح محادثة واتساب على
+  // رقم وهمي بصمت — بدل ما يضيع طلب زبونة حقيقية بدون ما حدا ينتبه.
+  checkoutBtn.addEventListener('click', function(e){
+    if(_cartIsPlaceholder){
+      e.preventDefault();
+      alert(t('order.settings_error'));
+    }
+  });
   document.getElementById('cartClearBtn').addEventListener('click', clearCart);
 
   body.querySelectorAll('.qty-btn').forEach(btn => {
@@ -186,9 +197,10 @@ function renderCartPage(){
 
 /** كل صفحة، بعد ما تجيب getSettings()، بتنادي هالدالة مرة وحدة عشان
     السلة تعرف العملة ورقم واتساب التاجر (مش معروفين قبل هيك). */
-function setCartContext(currency, buyPhone){
+function setCartContext(currency, buyPhone, isPlaceholder){
   _cartCurrency = currency;
   _cartBuyPhone = buyPhone;
+  _cartIsPlaceholder = !!isPlaceholder;
   renderCartPage();
   if(typeof renderFavoritesPage === 'function') renderFavoritesPage();
 }

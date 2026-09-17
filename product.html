@@ -240,6 +240,7 @@
   let currentSizeRegion = 'ar';
   let currentCurrency = null;
   let currentBuyPhone = null;
+  let currentIsPlaceholder = false;
 
   function setActiveImage(index){
     currentIndex = index;
@@ -358,8 +359,17 @@
     if(!link || !currentProduct) return;
     const message = buildProductOrderMessage(currentProduct, currentCurrency, selectedColorName, selectedSize);
     link.href = buildWhatsAppLink(currentBuyPhone, message);
+    // SAFETY — لو الإعدادات لسا تجريبية وقت الضغط (رابط ناقص ?s=، الموقع
+    // موقوف مؤقتًا، أو انقطاع شبكة عابر)، منمنع فتح محادثة واتساب على
+    // رقم وهمي بصمت. onclick (مش addEventListener) قصداً — عشان ما
+    // تتراكم أكتر من مستمع على نفس الزر مع كل تبديل لون/مقاس.
+    link.onclick = function(e){
+      if(currentIsPlaceholder){
+        e.preventDefault();
+        alert(t('order.settings_error'));
+      }
+    };
   }
-
   /** بتضيف نسخة عن المنتج الحالي (بلونه/مقاسه المختارين حاليًا) للسلة.
       لو المنتج بدون سعر ("السعر عند الطلب")، بتنحفظ بـ price:null وبتترك
       عرض السعر والحساب الإجمالي بالسلة يتعاملوا معها متل باقي الموقع. */
@@ -498,7 +508,7 @@
     const id = params.get('id');
     const root = document.getElementById('productRoot');
     const settings = await getSettings();
-    setCartContext(settings.currency, settings.buy_phone);
+    setCartContext(settings.currency, settings.buy_phone, settings.__isPlaceholder);
 
     const waLinkHeader = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
     document.getElementById('headerWhatsapp').href = waLinkHeader;
@@ -522,6 +532,7 @@
     currentProduct = product;
     currentCurrency = settings.currency;
     currentBuyPhone = settings.buy_phone;
+    currentIsPlaceholder = !!settings.__isPlaceholder;
 
     document.title = `${localizedField(product, 'name')} — ELITEDRESS`;
     document.getElementById('breadcrumbCurrent').textContent = localizedField(product, 'name');

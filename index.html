@@ -873,7 +873,7 @@
 <script>
   (async function initArvixWiring(){
     const settings = await getSettings();
-    setCartContext(settings.currency, settings.buy_phone);
+    setCartContext(settings.currency, settings.buy_phone, settings.__isPlaceholder);
     const waHeader = document.getElementById('headerWhatsapp');
     if(waHeader) waHeader.href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
 

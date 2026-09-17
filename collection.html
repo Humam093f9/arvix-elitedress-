@@ -290,7 +290,7 @@
 
   (async function init(){
     const settings = await getSettings();
-    setCartContext(settings.currency, settings.buy_phone);
+    setCartContext(settings.currency, settings.buy_phone, settings.__isPlaceholder);
     const grid = document.getElementById('productGrid');
     const filtersBar = document.getElementById('filters');
     const categorySelect = document.getElementById('categorySelect');

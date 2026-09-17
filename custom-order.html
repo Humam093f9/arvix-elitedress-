@@ -288,7 +288,7 @@
 
   (async function init(){
     const settings = await getSettings();
-    setCartContext(settings.currency, settings.buy_phone);
+    setCartContext(settings.currency, settings.buy_phone, settings.__isPlaceholder);
 
     document.getElementById('headerWhatsapp').href = buildWhatsAppLink(settings.buy_phone, t('whatsapp.general_inquiry'));
     document.getElementById('footerContact').innerHTML = renderFooterContact(settings);
@@ -358,6 +358,16 @@
     // Submit
     document.getElementById('submitOrderBtn').addEventListener('click', () => {
       const errorEl = document.getElementById('formError');
+
+      // SAFETY — لو الإعدادات لسا تجريبية وقت الضغط (رابط ناقص ?s=،
+      // الموقع موقوف مؤقتًا، أو انقطاع شبكة عابر)، منمنع فتح محادثة
+      // واتساب على رقم وهمي بصمت — بدل ما يضيع طلب تفصيل حقيقي بدون
+      // ما حدا ينتبه.
+      if(settings.__isPlaceholder){
+        errorEl.textContent = t('order.settings_error');
+        return;
+      }
+
       const { selectedLibraryNames, customEntries } = collectSelections();
       const hasAnyFabric = selectedLibraryNames.length > 0 || customEntries.some(e => e.name);
 
