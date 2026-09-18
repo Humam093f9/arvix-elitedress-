@@ -351,7 +351,18 @@
           statusEl.textContent = t('custom.upload_failed');
         }
       }catch(err){
-        statusEl.textContent = t('custom.upload_failed');
+        // تشخيص للموبايل (بدون أدوات مطوّر) — بنعرض رسالة الخطأ الحقيقية
+        // من Supabase مباشرة بالصفحة نفسها (مو بس بالـconsole)، عشان
+        // تقدري تاخدي سكرين شوت منها وترسليها مباشرة، بدل ما تحتاجي
+        // F12/Inspect يلي مش متوفرين على موبايل أصلاً.
+        const detail = (err && (err.message || err.error_description || err.error)) || String(err);
+        statusEl.textContent = '';
+        statusEl.appendChild(document.createTextNode(t('custom.upload_failed')));
+        statusEl.appendChild(document.createElement('br'));
+        const detailEl = document.createElement('span');
+        detailEl.style.cssText = 'font-size:11px;opacity:.75;direction:ltr;unicode-bidi:plaintext;';
+        detailEl.textContent = detail;
+        statusEl.appendChild(detailEl);
       }
     });
 

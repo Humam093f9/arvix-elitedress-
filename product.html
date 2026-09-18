@@ -235,6 +235,7 @@
   let currentImages = [];
   let currentIndex = 0;
   let selectedColorName = null;
+  let selectedColorNameEn = null; // نسخة إنجليزية من اسم اللون المختار (لو موجودة) — للعرض بس، مش للمطابقة عند إعادة الرسم
   let selectedSize = null;
   let currentProduct = null;
   let currentSizeRegion = 'ar';
@@ -312,10 +313,12 @@
   function selectColorAt(idx){
     if(idx === -1){
       selectedColorName = null;
+      selectedColorNameEn = null;
       currentImages = buildGalleryImages(currentProduct);
     }else{
       const color = currentProduct.colors[idx];
       selectedColorName = color.name;
+      selectedColorNameEn = color.name_en || '';
       const ownImages = Array.isArray(color.images) ? color.images.filter(Boolean) : [];
       currentImages = ownImages.length ? ownImages : [currentProduct.image_url];
     }
@@ -357,7 +360,8 @@
   function updateOrderLink(){
     const link = document.getElementById('orderWhatsapp');
     if(!link || !currentProduct) return;
-    const message = buildProductOrderMessage(currentProduct, currentCurrency, selectedColorName, selectedSize);
+    const displayColorName = selectedColorName ? localizedField({name: selectedColorName, name_en: selectedColorNameEn}, 'name') : null;
+    const message = buildProductOrderMessage(currentProduct, currentCurrency, displayColorName, selectedSize);
     link.href = buildWhatsAppLink(currentBuyPhone, message);
     // SAFETY — لو الإعدادات لسا تجريبية وقت الضغط (رابط ناقص ?s=، الموقع
     // موقوف مؤقتًا، أو انقطاع شبكة عابر)، منمنع فتح محادثة واتساب على
@@ -385,7 +389,7 @@
       productId: currentProduct.id,
       name: localizedField(currentProduct, 'name'),
       price: price,
-      colorName: selectedColorName,
+      colorName: selectedColorName ? localizedField({name: selectedColorName, name_en: selectedColorNameEn}, 'name') : null,
       fabricsText: fabricsText,
       size: selectedSize,
       image: currentProduct.image_url
@@ -423,9 +427,9 @@
             <span>${t('product.color_default')}</span>
           </button>
           ${p.colors.map((c, i) => `
-            <button type="button" class="color-option" data-index="${i}" aria-label="${c.name}">
+            <button type="button" class="color-option" data-index="${i}" aria-label="${localizedField(c, 'name')}">
               <span class="swatch-circle" style="background-color:${c.hex || '#8A8A8A'}"></span>
-              <span>${c.name}</span>
+              <span>${localizedField(c, 'name')}</span>
             </button>
           `).join('')}
         </div>
